@@ -11,9 +11,9 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.userSignInDto,
       }),
     }),
-    confirmEmail1: build.mutation<
-      ConfirmEmail1ApiResponse,
-      ConfirmEmail1ApiArg
+    confirmEmailSend: build.mutation<
+      ConfirmEmailSendApiResponse,
+      ConfirmEmailSendApiArg
     >({
       query: (queryArg) => ({
         url: `/api/auth/confirmEmail/send`,
@@ -27,9 +27,9 @@ const injectedRtkApi = api.injectEndpoints({
         method: "POST",
       }),
     }),
-    resetPassword1: build.mutation<
-      ResetPassword1ApiResponse,
-      ResetPassword1ApiArg
+    resetPasswordSend: build.mutation<
+      ResetPasswordSendApiResponse,
+      ResetPasswordSendApiArg
     >({
       query: (queryArg) => ({
         url: `/api/auth/resetPassword/send`,
@@ -75,6 +75,15 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
+    deleteProfile: build.mutation<
+      DeleteProfileApiResponse,
+      DeleteProfileApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/user/admin/${queryArg.id}`,
+        method: "DELETE",
+      }),
+    }),
     updateUserAdmin: build.mutation<
       UpdateUserAdminApiResponse,
       UpdateUserAdminApiArg
@@ -85,13 +94,16 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.userUpdateAdminDto,
       }),
     }),
-    deleteUser: build.mutation<DeleteUserApiResponse, DeleteUserApiArg>({
-      query: (queryArg) => ({
-        url: `/api/user/admin/${queryArg.id}`,
-        method: "DELETE",
-      }),
+    deleteProfileCurrent: build.mutation<
+      DeleteProfileCurrentApiResponse,
+      DeleteProfileCurrentApiArg
+    >({
+      query: () => ({ url: `/api/user/profile`, method: "DELETE" }),
     }),
-    getProfile: build.query<GetProfileApiResponse, GetProfileApiArg>({
+    getProfileCurrent: build.query<
+      GetProfileCurrentApiResponse,
+      GetProfileCurrentApiArg
+    >({
       query: () => ({ url: `/api/user/profile` }),
     }),
     updateProfile: build.mutation<
@@ -104,13 +116,7 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.userUpdateDto,
       }),
     }),
-    deleteProfile: build.mutation<
-      DeleteProfileApiResponse,
-      DeleteProfileApiArg
-    >({
-      query: () => ({ url: `/api/user/profile`, method: "DELETE" }),
-    }),
-    getProfile1: build.query<GetProfile1ApiResponse, GetProfile1ApiArg>({
+    getProfile: build.query<GetProfileApiResponse, GetProfileApiArg>({
       query: (queryArg) => ({ url: `/api/user/profile/${queryArg.id}` }),
     }),
     search: build.query<SearchApiResponse, SearchApiArg>({
@@ -130,16 +136,17 @@ export type AuthenticateUserAdminApiResponse =
 export type AuthenticateUserAdminApiArg = {
   userSignInDto: UserSignInDto;
 };
-export type ConfirmEmail1ApiResponse = /** status 200 OK */ BaseResponseVoid;
-export type ConfirmEmail1ApiArg = {
+export type ConfirmEmailSendApiResponse = /** status 200 OK */ BaseResponseVoid;
+export type ConfirmEmailSendApiArg = {
   userEmailDto: UserEmailDto;
 };
 export type ConfirmEmailApiResponse = /** status 200 OK */ BaseResponseVoid;
 export type ConfirmEmailApiArg = {
   token: string;
 };
-export type ResetPassword1ApiResponse = /** status 200 OK */ BaseResponseVoid;
-export type ResetPassword1ApiArg = {
+export type ResetPasswordSendApiResponse =
+  /** status 200 OK */ BaseResponseVoid;
+export type ResetPasswordSendApiArg = {
   userEmailDto: UserEmailDto;
 };
 export type ResetPasswordApiResponse = /** status 200 OK */ BaseResponseVoid;
@@ -167,27 +174,28 @@ export type SearchAdminApiArg = {
   sort?: string[];
   searchDto: UserSearchAdminDto;
 };
+export type DeleteProfileApiResponse = /** status 200 OK */ BaseResponseVoid;
+export type DeleteProfileApiArg = {
+  id: string;
+};
 export type UpdateUserAdminApiResponse = /** status 200 OK */ BaseResponseVoid;
 export type UpdateUserAdminApiArg = {
   id: string;
   userUpdateAdminDto: UserUpdateAdminDto;
 };
-export type DeleteUserApiResponse = /** status 200 OK */ BaseResponseVoid;
-export type DeleteUserApiArg = {
-  id: string;
-};
-export type GetProfileApiResponse =
+export type DeleteProfileCurrentApiResponse =
+  /** status 200 OK */ BaseResponseVoid;
+export type DeleteProfileCurrentApiArg = void;
+export type GetProfileCurrentApiResponse =
   /** status 200 OK */ BaseResponseUserViewDto;
-export type GetProfileApiArg = void;
+export type GetProfileCurrentApiArg = void;
 export type UpdateProfileApiResponse = /** status 200 OK */ BaseResponseVoid;
 export type UpdateProfileApiArg = {
   userUpdateDto: UserUpdateDto;
 };
-export type DeleteProfileApiResponse = /** status 200 OK */ BaseResponseVoid;
-export type DeleteProfileApiArg = void;
-export type GetProfile1ApiResponse =
+export type GetProfileApiResponse =
   /** status 200 OK */ BaseResponseUserViewDto;
-export type GetProfile1ApiArg = {
+export type GetProfileApiArg = {
   id: string;
 };
 export type SearchApiResponse =
@@ -280,18 +288,18 @@ export type UserSearchDto = {
 };
 export const {
   useAuthenticateUserAdminMutation,
-  useConfirmEmail1Mutation,
+  useConfirmEmailSendMutation,
   useConfirmEmailMutation,
-  useResetPassword1Mutation,
+  useResetPasswordSendMutation,
   useResetPasswordMutation,
   useAuthenticateUserMutation,
   useCreateUserMutation,
   useSearchAdminQuery,
-  useUpdateUserAdminMutation,
-  useDeleteUserMutation,
-  useGetProfileQuery,
-  useUpdateProfileMutation,
   useDeleteProfileMutation,
-  useGetProfile1Query,
+  useUpdateUserAdminMutation,
+  useDeleteProfileCurrentMutation,
+  useGetProfileCurrentQuery,
+  useUpdateProfileMutation,
+  useGetProfileQuery,
   useSearchQuery,
 } = injectedRtkApi;

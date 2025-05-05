@@ -1,0 +1,33 @@
+{
+  "username": {
+    "title": "Username",
+    "requiredError": "Please enter a username!"
+  },
+  "password": {
+    "title": "Password",
+    "strongPasswordError": "The password you entered is not strong enough! A password should have at least one uppercase letter, one lowercase letter, one number, and one special character.",
+    "requiredError": "Please enter a password!"
+  },
+  "email": {
+    "title": "Email",
+    "invalidError": "Please enter a valid email!",
+    "requiredError": "Please enter an email!"
+  },
+  "signin": {
+    "title": "Sign in",
+    "badCredentialsError": "Invalid credentials!",
+    "unknownError": "An unknown error appeared while signing you in! Please try again."
+  },
+  "signup": {
+    "title": "Sign up",
+    "unknownError": "An unknown error appeared while signing you up! Please try again."
+  },
+  "profile": {
+    "title": "Profile",
+    "userData": "User data",
+    "settings": "Settings",
+    "actions": "Account actions",
+    "memberSince": "Member since"
+  },
+  "signout": "Sign out"
+}

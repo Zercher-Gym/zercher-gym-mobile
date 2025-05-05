@@ -1,9 +1,8 @@
-import { ModeType } from "@/components/ui/gluestack-ui-provider";
 import { createSelector, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
 export interface IThemeState {
-  mode: ModeType;
+  mode: "light" | "dark";
 }
 
 const initialState: IThemeState = {
@@ -15,9 +14,6 @@ export const themeSlice = createSlice({
   initialState,
   reducers: {
     toggleThemeMode: (state: IThemeState) => {
-      if (state.mode === "system") {
-        return;
-      }
       if (state.mode === "dark") {
         state.mode = "light";
       } else {

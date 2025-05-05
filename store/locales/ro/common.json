@@ -1,5 +1,21 @@
 {
   "application": {
-    "title": "Zercher Gym"
+    "title": "Zercher Gym",
+    "close": "Închide"
+  },
+  "language": {
+    "title": "Limbă",
+    "en": "Engleză",
+    "ro": "Română"
+  },
+  "theme": {
+    "title": "Temă",
+    "light": "Deschis",
+    "dark": "Întunecat"
+  },
+  "notFound": {
+    "title": "Pagina nu a fost găsită!",
+    "description": "Pagina nu a putut fi găsită! Va puteți întoarce la pagina de profil totuși.",
+    "button": "Înapoi la profil"
   }
 }
