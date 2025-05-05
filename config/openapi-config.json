@@ -1,0 +1,8 @@
+{
+  "schemaFile": "./swagger.json",
+  "apiFile": "../store/slices/baseApiSlice",
+  "apiImport": "baseApi",
+  "outputFile": "../store/slices/apiSlice.ts",
+  "exportName": "api",
+  "hooks": true
+}
