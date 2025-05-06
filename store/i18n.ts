@@ -13,6 +13,7 @@ i18n
   .use(backend)
   .use(initReactI18next)
   .init({
+    defaultNS: "common",
     fallbackLng: supportedLanguages,
     supportedLngs: supportedLanguages,
     interpolation: {

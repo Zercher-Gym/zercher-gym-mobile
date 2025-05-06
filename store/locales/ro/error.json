@@ -1,0 +1,9 @@
+{
+  "accessDenied": "Acces interzis!",
+  "userNotEnabled": "Contul dumneavoastră nu este activat! Vă rugăm să vă activați contul!",
+  "userAuthenticationFailed": "Autentificarea utilizatorului a eșuat!",
+  "invalidCredentials": "Credențiale invalide!",
+  "userWithUsernameExists": "Un utilizator cu acest nume deja există!",
+  "userWithEmailExists": "Un utilizator cu acest email deja există!",
+  "userWithUsernameNotFound": "Contul dumneavoastră nu a fost găsit!"
+}

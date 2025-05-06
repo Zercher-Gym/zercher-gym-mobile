@@ -1,0 +1,39 @@
+{
+  "username": {
+    "title": "Nume utilizator",
+    "requiredError": "Vă rugăm să introduceți un nume de utilizator!"
+  },
+  "password": {
+    "title": "Parolă",
+    "strongPasswordError": "Parola pe care ați introdus-o nu este suficient de puternică! O parolă ar trebui să aibă cel puțin o literă mare, o literă mică, o cifră și un caracter special.",
+    "requiredError": "Vă rugăm să introduceți o parolă!"
+  },
+  "email": {
+    "title": "Email",
+    "invalidError": "Vă rugăm să introduceți un email valid!",
+    "requiredError": "Vă rugăm să introduceți un email!"
+  },
+  "signin": {
+    "title": "Autentifică-te",
+    "badCredentialsError": "Credețiale invalide!",
+    "unknownError": "O eroare necunoscută s-a produs la autentificare! Vă rugăm să încercați din nou.",
+    "signUpText": "Nu ai un cont? Înregistrează-te"
+  },
+  "signup": {
+    "title": "Înregistrează-te",
+    "unknownError": "O eroare necunoscută s-a produs la înregistrare! Vă rugăm să încercați din nou.",
+    "signInText": "Ai deja un cont? Autentifică-te",
+    "success": {
+      "title": "Mulțumim că te-ai întregistrat!",
+      "message": "Ar trebui să primești un email oricând pentru a-ți activa contul. Dacă nu găsești email-ul, atunci te rugăm să verifici și spam-ul."
+    }
+  },
+  "profile": {
+    "title": "Profil",
+    "userData": "Date utilizator",
+    "settings": "Setări",
+    "actions": "Acțiuni cont",
+    "memberSince": "Membru din"
+  },
+  "signout": "Deconectare"
+}
