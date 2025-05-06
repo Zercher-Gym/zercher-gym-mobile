@@ -109,7 +109,7 @@ export default function SignUpScreen() {
     <>
       <Surface style={styles.container} elevation={4}>
         <View style={styles.wrapper}>
-          {success ? (
+          {!success ? (
             <>
               <Card style={styles.card}>
                 <Card.Title

@@ -64,7 +64,7 @@ export default function Profile() {
   });
 
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <Surface style={styles.container} elevation={4}>
         <Card style={styles.card}>
           <Card.Title
@@ -135,6 +135,12 @@ export default function Profile() {
                   title={t("signout", { ns: "authentication" })}
                   right={(props) => (
                     <IconButton {...props} icon="logout" onPress={signOut} />
+                  )}
+                />
+                <List.Item
+                  title={t("signout", { ns: "authentication" })}
+                  right={(props) => (
+                    <IconButton {...props} icon="reset" onPress={signOut} />
                   )}
                 />
               </List.Section>
