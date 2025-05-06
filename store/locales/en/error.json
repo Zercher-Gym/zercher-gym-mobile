@@ -1,0 +1,9 @@
+{
+  "accessDenied": "Access denied!",
+  "userNotEnabled": "Your account is not enabled! Please enable your account first!",
+  "userAuthenticationFailed": "User authentication failed!",
+  "invalidCredentials": "Invalid credentials!",
+  "userWithUsernameExists": "An user with this username already exists!",
+  "userWithEmailExists": "An user with this email already exists!",
+  "userWithUsernameNotFound": "Could not find your account!"
+}

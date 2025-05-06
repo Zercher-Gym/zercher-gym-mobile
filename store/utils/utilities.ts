@@ -1,6 +1,8 @@
 const strongPasswordRegex =
   /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?\d)(?=.*?[#?!@$%^&*-]).{8,}$/;
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 const dateFormatRo = new Intl.DateTimeFormat("ro", {
   timeStyle: "medium",
   dateStyle: "short",
@@ -24,5 +26,5 @@ const formatDate = (locale: string, dateString: string | undefined | null) => {
   return date.substring(0, 10);
 };
 
-export { formatDate, formatDateTime, strongPasswordRegex };
+export { emailRegex, formatDate, formatDateTime, strongPasswordRegex };
 

@@ -16,11 +16,17 @@
   "signin": {
     "title": "Autentifică-te",
     "badCredentialsError": "Credețiale invalide!",
-    "unknownError": "O eroare necunoscută s-a produs la autentificare! Vă rugăm să încercați din nou."
+    "unknownError": "O eroare necunoscută s-a produs la autentificare! Vă rugăm să încercați din nou.",
+    "signUpText": "Nu ai un cont? Înregistrează-te"
   },
   "signup": {
     "title": "Înregistrează-te",
-    "unknownError": "O eroare necunoscută s-a produs la înregistrare! Vă rugăm să încercați din nou."
+    "unknownError": "O eroare necunoscută s-a produs la înregistrare! Vă rugăm să încercați din nou.",
+    "signInText": "Ai deja un cont? Autentifică-te",
+    "success": {
+      "title": "Mulțumim că te-ai întregistrat!",
+      "message": "Ar trebui să primești un email oricând pentru a-ți activa contul. Dacă nu găsești email-ul, atunci te rugăm să verifici și spam-ul."
+    }
   },
   "profile": {
     "title": "Profil",
