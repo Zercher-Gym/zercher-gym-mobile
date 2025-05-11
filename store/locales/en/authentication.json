@@ -41,5 +41,13 @@
     "actions": "Account actions",
     "memberSince": "Member since"
   },
+  "deleteProfile": {
+    "title": "Delete profile",
+    "confirmationMessage": "Are your sure you want to delete your profile? Please take into consideration the fact that all data associated with your account will be deleted with it!",
+    "success": "Your profile has been deleted! It has been a pleasure!"
+  },
+  "editProfile": {
+    "title": "Edit profile"
+  },
   "signout": "Sign out"
 }

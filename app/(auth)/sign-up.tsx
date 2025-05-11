@@ -28,9 +28,7 @@ export default function SignUpScreen() {
   const { t } = useTranslation();
 
   const [success, setSuccess] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | undefined>(
-    undefined
-  );
+  const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
   const [countdownStarted, setCountdownStarted] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(countdownSeconds);

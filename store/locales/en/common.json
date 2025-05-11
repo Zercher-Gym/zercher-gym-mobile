@@ -1,7 +1,9 @@
 {
   "application": {
     "title": "Zercher Gym",
-    "close": "Close"
+    "close": "Close",
+    "delete": "Delete",
+    "edit": "Edit"
   },
   "language": {
     "title": "Language",

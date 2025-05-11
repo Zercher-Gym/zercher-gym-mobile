@@ -27,7 +27,7 @@ export default function PasswordResetScreen() {
   const [resetSent, setResetSent] = useState(false);
   const [infoMessage, setInfoMessage] = useState<string | undefined>(undefined);
 
-  const [resetPasswordSend, requestInformation] =
+  const [resetPasswordSend, resetPasswordSendInformation] =
     useResetPasswordSendMutation();
 
   const {
@@ -51,11 +51,10 @@ export default function PasswordResetScreen() {
       setResetSent(true);
       setTimeout(() => {
         setResetSent(false);
-      }, 10000);
+      }, 30000);
     } catch (err) {
       const error = err as any;
 
-      console.log(error);
       let errorMessage = "unknownError";
       if (error.data !== undefined && error.data !== null) {
         errorMessage = error.data.error;
@@ -65,7 +64,7 @@ export default function PasswordResetScreen() {
   };
 
   const dismissInfo = () => {
-    requestInformation.reset();
+    resetPasswordSendInformation.reset();
     setInfoMessage(undefined);
   };
 
@@ -166,7 +165,10 @@ export default function PasswordResetScreen() {
         </View>
       </Surface>
       <Snackbar
-        visible={requestInformation.isSuccess || requestInformation.isError}
+        visible={
+          resetPasswordSendInformation.isSuccess ||
+          resetPasswordSendInformation.isError
+        }
         onDismiss={dismissInfo}
         action={{
           label: t("application.close"),
