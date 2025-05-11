@@ -64,6 +64,60 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.userSignUpDto,
       }),
     }),
+    searchExerciseAdmin: build.query<
+      SearchExerciseAdminApiResponse,
+      SearchExerciseAdminApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/exercise/admin/search`,
+        params: {
+          page: queryArg.page,
+          size: queryArg.size,
+          sort: queryArg.sort,
+          searchAdminDTO: queryArg.searchAdminDto,
+        },
+      }),
+    }),
+    createExercise: build.mutation<
+      CreateExerciseApiResponse,
+      CreateExerciseApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/exercise/create`,
+        method: "POST",
+        body: queryArg.exerciseCreateDto,
+      }),
+    }),
+    updateLabel: build.mutation<UpdateLabelApiResponse, UpdateLabelApiArg>({
+      query: (queryArg) => ({
+        url: `/api/exercise/label/${queryArg.id}`,
+        method: "PUT",
+        body: queryArg.exerciseLabelUpdateDto,
+      }),
+    }),
+    searchExercise: build.query<
+      SearchExerciseApiResponse,
+      SearchExerciseApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/exercise/search`,
+        params: {
+          searchDTO: queryArg.searchDto,
+        },
+      }),
+    }),
+    deleteExercise: build.mutation<
+      DeleteExerciseApiResponse,
+      DeleteExerciseApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/exercise/${queryArg.id}`,
+        method: "DELETE",
+      }),
+    }),
+    getExercise: build.query<GetExerciseApiResponse, GetExerciseApiArg>({
+      query: (queryArg) => ({ url: `/api/exercise/${queryArg.id}` }),
+    }),
     searchAdmin: build.query<SearchAdminApiResponse, SearchAdminApiArg>({
       query: (queryArg) => ({
         url: `/api/user/admin/search`,
@@ -163,6 +217,40 @@ export type CreateUserApiResponse = /** status 200 OK */ BaseResponseVoid;
 export type CreateUserApiArg = {
   userSignUpDto: UserSignUpDto;
 };
+export type SearchExerciseAdminApiResponse =
+  /** status 200 OK */ PageResponseExerciseViewAdminDto;
+export type SearchExerciseAdminApiArg = {
+  /** Zero-based page index (0..N) */
+  page?: number;
+  /** The size of the page to be returned */
+  size?: number;
+  /** Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+  sort?: string[];
+  searchAdminDto: ExerciseSearchAdminDto;
+};
+export type CreateExerciseApiResponse = /** status 200 OK */ BaseResponseVoid;
+export type CreateExerciseApiArg = {
+  exerciseCreateDto: ExerciseCreateDto;
+};
+export type UpdateLabelApiResponse = /** status 200 OK */ BaseResponseVoid;
+export type UpdateLabelApiArg = {
+  id: number;
+  exerciseLabelUpdateDto: ExerciseLabelUpdateDto;
+};
+export type SearchExerciseApiResponse =
+  /** status 200 OK */ BaseResponseListExerciseViewDto;
+export type SearchExerciseApiArg = {
+  searchDto: ExerciseSearchDto;
+};
+export type DeleteExerciseApiResponse = /** status 200 OK */ BaseResponseVoid;
+export type DeleteExerciseApiArg = {
+  id: string;
+};
+export type GetExerciseApiResponse =
+  /** status 200 OK */ BaseResponseExerciseViewAdminDto;
+export type GetExerciseApiArg = {
+  id: string;
+};
 export type SearchAdminApiResponse =
   /** status 200 OK */ PageResponseUserViewAdminDto;
 export type SearchAdminApiArg = {
@@ -227,6 +315,68 @@ export type UserSignUpDto = {
   email?: string;
   password?: string;
   username?: string;
+};
+export type ExerciseLabelViewAdminDto = {
+  description?: string;
+  id: number;
+  language: "RO" | "EN";
+  title?: string;
+};
+export type ExerciseViewAdminDto = {
+  id: string;
+  identifier?: string;
+  labels: ExerciseLabelViewAdminDto[];
+};
+export type PageResponseExerciseViewAdminDto = {
+  data?: ExerciseViewAdminDto[];
+  error?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  success?: boolean;
+  totalElements?: number;
+};
+export type ExerciseSearchAdminDto = {
+  description?: string;
+  identifier?: string;
+  language?: "RO" | "EN";
+  title?: string;
+};
+export type ExerciseLabelCreateDto = {
+  description?: string;
+  language: "RO" | "EN";
+  title?: string;
+};
+export type ExerciseCreateDto = {
+  identifier?: string;
+  labels: ExerciseLabelCreateDto[];
+};
+export type ExerciseLabelUpdateDto = {
+  description?: string;
+  title?: string;
+};
+export type ExerciseLabelViewDto = {
+  description?: string;
+  title?: string;
+};
+export type ExerciseViewDto = {
+  identifier?: string;
+  labels: {
+    [key: string]: ExerciseLabelViewDto;
+  };
+};
+export type BaseResponseListExerciseViewDto = {
+  data?: ExerciseViewDto[];
+  error?: string;
+  success?: boolean;
+};
+export type ExerciseSearchDto = {
+  contains?: string;
+  limit?: number;
+};
+export type BaseResponseExerciseViewAdminDto = {
+  data?: ExerciseViewAdminDto;
+  error?: string;
+  success?: boolean;
 };
 export type UserViewAdminDto = {
   createdAt?: string;
@@ -294,6 +444,12 @@ export const {
   useResetPasswordMutation,
   useAuthenticateUserMutation,
   useCreateUserMutation,
+  useSearchExerciseAdminQuery,
+  useCreateExerciseMutation,
+  useUpdateLabelMutation,
+  useSearchExerciseQuery,
+  useDeleteExerciseMutation,
+  useGetExerciseQuery,
   useSearchAdminQuery,
   useDeleteProfileMutation,
   useUpdateUserAdminMutation,

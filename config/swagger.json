@@ -409,6 +409,383 @@
         "tags": ["Auth"]
       }
     },
+    "/api/exercise/admin/search": {
+      "get": {
+        "operationId": "searchExerciseAdmin",
+        "parameters": [
+          {
+            "description": "Zero-based page index (0..N)",
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": { "type": "integer", "default": 0, "minimum": 0 }
+          },
+          {
+            "description": "The size of the page to be returned",
+            "in": "query",
+            "name": "size",
+            "required": false,
+            "schema": { "type": "integer", "default": 20, "minimum": 1 }
+          },
+          {
+            "description": "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": { "type": "array", "items": { "type": "string" } }
+          },
+          {
+            "in": "query",
+            "name": "searchAdminDTO",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/ExerciseSearchAdminDTO" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageResponseExerciseViewAdminDTO"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [{ "Authentication": [] }],
+        "tags": ["Exercise", "Admin"]
+      }
+    },
+    "/api/exercise/create": {
+      "post": {
+        "operationId": "createExercise",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ExerciseCreateDTO" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [{ "Authentication": [] }],
+        "tags": ["Exercise", "Admin"]
+      }
+    },
+    "/api/exercise/label/{id}": {
+      "put": {
+        "operationId": "updateLabel",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExerciseLabelUpdateDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [{ "Authentication": [] }],
+        "tags": ["Exercise", "Admin"]
+      }
+    },
+    "/api/exercise/search": {
+      "get": {
+        "operationId": "searchExercise",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "searchDTO",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/ExerciseSearchDTO" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseListExerciseViewDTO"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [{ "Authentication": [] }],
+        "tags": ["Exercise"]
+      }
+    },
+    "/api/exercise/{id}": {
+      "delete": {
+        "operationId": "deleteExercise",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [{ "Authentication": [] }],
+        "tags": ["Exercise", "Admin"]
+      },
+      "get": {
+        "operationId": "getExercise",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseExerciseViewAdminDTO"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [{ "Authentication": [] }],
+        "tags": ["Exercise"]
+      }
+    },
     "/api/user/admin/search": {
       "get": {
         "operationId": "searchAdmin",
@@ -883,6 +1260,25 @@
   },
   "components": {
     "schemas": {
+      "BaseResponseExerciseViewAdminDTO": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/ExerciseViewAdminDTO" },
+          "error": { "type": "string" },
+          "success": { "type": "boolean" }
+        }
+      },
+      "BaseResponseListExerciseViewDTO": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ExerciseViewDTO" }
+          },
+          "error": { "type": "string" },
+          "success": { "type": "boolean" }
+        }
+      },
       "BaseResponseListUserListViewDTO": {
         "type": "object",
         "properties": {
@@ -916,6 +1312,109 @@
           "data": { "type": "object" },
           "error": { "type": "string" },
           "success": { "type": "boolean" }
+        }
+      },
+      "ExerciseCreateDTO": {
+        "type": "object",
+        "properties": {
+          "identifier": { "type": "string", "maxLength": 100, "minLength": 0 },
+          "labels": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ExerciseLabelCreateDTO" },
+            "uniqueItems": true
+          }
+        },
+        "required": ["labels"]
+      },
+      "ExerciseLabelCreateDTO": {
+        "type": "object",
+        "properties": {
+          "description": { "type": "string", "maxLength": 255, "minLength": 0 },
+          "language": { "type": "string", "enum": ["RO", "EN"] },
+          "title": { "type": "string", "maxLength": 100, "minLength": 0 }
+        },
+        "required": ["language"]
+      },
+      "ExerciseLabelUpdateDTO": {
+        "type": "object",
+        "properties": {
+          "description": { "type": "string", "maxLength": 255, "minLength": 0 },
+          "title": { "type": "string", "maxLength": 100, "minLength": 0 }
+        }
+      },
+      "ExerciseLabelViewAdminDTO": {
+        "type": "object",
+        "properties": {
+          "description": { "type": "string", "minLength": 1 },
+          "id": { "type": "integer", "format": "int64" },
+          "language": { "type": "string", "enum": ["RO", "EN"] },
+          "title": { "type": "string", "minLength": 1 }
+        },
+        "required": ["id", "language"]
+      },
+      "ExerciseLabelViewDTO": {
+        "type": "object",
+        "properties": {
+          "description": { "type": "string", "minLength": 1 },
+          "title": { "type": "string", "minLength": 1 }
+        }
+      },
+      "ExerciseSearchAdminDTO": {
+        "type": "object",
+        "properties": {
+          "description": { "type": "string", "maxLength": 255, "minLength": 0 },
+          "identifier": { "type": "string", "maxLength": 100, "minLength": 0 },
+          "language": { "type": "string", "enum": ["RO", "EN"] },
+          "title": { "type": "string", "maxLength": 100, "minLength": 0 }
+        }
+      },
+      "ExerciseSearchDTO": {
+        "type": "object",
+        "properties": {
+          "contains": { "type": "string", "maxLength": 100, "minLength": 0 },
+          "limit": { "type": "integer", "format": "int32" }
+        }
+      },
+      "ExerciseViewAdminDTO": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "identifier": { "type": "string", "maxLength": 100, "minLength": 0 },
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExerciseLabelViewAdminDTO"
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": ["id", "labels"]
+      },
+      "ExerciseViewDTO": {
+        "type": "object",
+        "properties": {
+          "identifier": { "type": "string", "maxLength": 100, "minLength": 0 },
+          "labels": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ExerciseLabelViewDTO"
+            }
+          }
+        },
+        "required": ["labels"]
+      },
+      "PageResponseExerciseViewAdminDTO": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ExerciseViewAdminDTO" }
+          },
+          "error": { "type": "string" },
+          "pageNumber": { "type": "integer", "format": "int32" },
+          "pageSize": { "type": "integer", "format": "int32" },
+          "success": { "type": "boolean" },
+          "totalElements": { "type": "integer", "format": "int64" }
         }
       },
       "PageResponseUserViewAdminDTO": {

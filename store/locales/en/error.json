@@ -1,4 +1,5 @@
 {
+  "unknownError": "An unknown error has occured! Please try again later!",
   "accessDenied": "Access denied!",
   "userNotEnabled": "Your account is not enabled! Please enable your account first!",
   "userAuthenticationFailed": "User authentication failed!",

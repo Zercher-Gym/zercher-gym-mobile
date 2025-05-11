@@ -16,17 +16,23 @@
   "signin": {
     "title": "Sign in",
     "badCredentialsError": "Invalid credentials!",
-    "unknownError": "An unknown error appeared while signing you in! Please try again.",
+    "forgotPasswordText": "Forgot password? Change it here",
     "signUpText": "Don't have an account? Sign up"
   },
   "signup": {
     "title": "Sign up",
-    "unknownError": "An unknown error appeared while signing you up! Please try again.",
     "signInText": "Already have an account? Sign in",
+    "resendConfirmation": "Resend confirmation",
+    "resendConfirmationSeconds": "Resend confirmation in {{seconds}} seconds.",
     "success": {
       "title": "Thank you for signing up!",
       "message": "You should receive an email to activate your account any time now. If you don't find the email, please check your spam as well."
     }
+  },
+  "resetPassword": {
+    "title": "Reset password",
+    "returnToSignIn": "Back to sign in",
+    "sucessMessage": "An email has been sent to this address. If you don't see the email, please check your spam as well."
   },
   "profile": {
     "title": "Profile",

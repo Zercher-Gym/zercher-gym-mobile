@@ -53,10 +53,15 @@ export default function SignInScreen() {
       }).unwrap();
       if (response.data) dispatch(setToken(response.data.toString()));
       else throw Error(response.error);
-      router.navigate("/(app)/profile");
+      router.navigate("/profile");
     } catch (err) {
       const error = err as any;
-      setErrorMessage(t(error.data.error, { ns: "error" }));
+
+      let errorMessage = "unknownError";
+      if (error.data !== undefined && error.data !== null) {
+        errorMessage = error.data.error;
+      }
+      setErrorMessage(t(errorMessage, { ns: "error" }));
     } finally {
       reset();
     }
@@ -71,6 +76,10 @@ export default function SignInScreen() {
     router.navigate("/sign-up");
   };
 
+  const goToResetPasswordPage = () => {
+    router.navigate("/password-reset");
+  };
+
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -79,9 +88,9 @@ export default function SignInScreen() {
       padding: 10,
     },
     wrapper: {
-      width: "50%",
+      width: "100%",
       minWidth: 300,
-      maxWidth: 500,
+      maxWidth: 600,
       flex: 1,
       flexDirection: "column",
       alignItems: "center",
@@ -99,7 +108,7 @@ export default function SignInScreen() {
       marginLeft: 5,
       color: theme.colors.error,
     },
-    signUpButton: {
+    button: {
       marginTop: 10,
       width: "100%",
     },
@@ -112,7 +121,7 @@ export default function SignInScreen() {
           <Card style={styles.card}>
             <Card.Title
               title={t("signin.title", { ns: "authentication" })}
-              titleVariant="displayMedium"
+              titleVariant="headlineMedium"
             />
             <Card.Content>
               <Controller
@@ -176,8 +185,11 @@ export default function SignInScreen() {
               </Button>
             </Card.Actions>
           </Card>
-          <Button style={styles.signUpButton} onPress={goToSignUpPage}>
+          <Button style={styles.button} onPress={goToSignUpPage}>
             {t("signin.signUpText", { ns: "authentication" })}
+          </Button>
+          <Button style={styles.button} onPress={goToResetPasswordPage}>
+            {t("signin.forgotPasswordText", { ns: "authentication" })}
           </Button>
         </View>
       </Surface>
