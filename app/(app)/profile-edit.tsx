@@ -1,56 +1,67 @@
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import {
-  Button,
-  Card,
-  Snackbar,
-  Surface,
-  Text,
-  TextInput,
-  useTheme,
+    Button,
+    Card,
+    Snackbar,
+    Surface,
+    Text,
+    TextInput,
+    useTheme,
 } from "react-native-paper";
-import { useDispatch } from "react-redux";
 
 import {
-  useAuthenticateUserMutation,
-  UserSignInDto,
+    useGetProfileCurrentQuery,
+    UserUpdateDto,
+    useUpdateProfileMutation,
 } from "@/store/slices/apiSlice";
-import { setToken } from "@/store/slices/authenticationSlice";
+import { emailRegex } from "@/store/utils/utilities";
 
-export default function SignInScreen() {
-  const dispatch = useDispatch();
+export default function ProfileEditPage() {
   const theme = useTheme();
   const router = useRouter();
   const { t } = useTranslation();
 
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
-  const [authenticateUser, requestInformation] = useAuthenticateUserMutation();
+  const [updateProfile, updateProfileInformation] = useUpdateProfileMutation();
+
+  const { currentData, isSuccess } = useGetProfileCurrentQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
 
   const {
     reset,
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<UserSignInDto>({
+  } = useForm<UserUpdateDto>({
     defaultValues: {
+      email: "",
       username: "",
-      password: "",
     },
   });
 
-  const onSubmit: SubmitHandler<UserSignInDto> = async (
-    data: UserSignInDto
+  useEffect(() => {
+    if (isSuccess) {
+      reset({
+        email: currentData?.data?.email,
+        username: currentData?.data?.username,
+      });
+    }
+  }, [isSuccess]);
+
+  const onSubmit: SubmitHandler<UserUpdateDto> = async (
+    data: UserUpdateDto
   ) => {
     try {
-      const response = await authenticateUser({
-        userSignInDto: data,
+      await updateProfile({
+        userUpdateDto: data,
       }).unwrap();
-      if (response.data) dispatch(setToken(response.data.toString()));
-      else throw Error(response.error);
+
       router.navigate("/profile");
     } catch (err) {
       const error = err as any;
@@ -60,22 +71,12 @@ export default function SignInScreen() {
         errorMessage = error.data.error;
       }
       setErrorMessage(t(errorMessage, { ns: "error" }));
-    } finally {
-      reset();
     }
   };
 
   const dismissError = () => {
-    requestInformation.reset();
+    updateProfileInformation.reset();
     setErrorMessage(undefined);
-  };
-
-  const goToSignUpPage = () => {
-    router.navigate("/sign-up");
-  };
-
-  const goToResetPasswordPage = () => {
-    router.navigate("/password-reset");
   };
 
   const styles = StyleSheet.create({
@@ -118,10 +119,42 @@ export default function SignInScreen() {
         <View style={styles.wrapper}>
           <Card style={styles.card}>
             <Card.Title
-              title={t("signin.title", { ns: "authentication" })}
+              title={t("editProfile.title", { ns: "authentication" })}
               titleVariant="headlineMedium"
             />
             <Card.Content>
+              <Controller
+                control={control}
+                name="email"
+                rules={{
+                  required: t("email.requiredError", {
+                    ns: "authentication",
+                  }),
+                  pattern: {
+                    value: emailRegex,
+                    message: t("email.invalidError", {
+                      ns: "authentication",
+                    }),
+                  },
+                }}
+                render={({ field: { onChange, value, onBlur } }) => (
+                  <TextInput
+                    label={t("email.title", { ns: "authentication" })}
+                    inputMode="email"
+                    mode="outlined"
+                    autoCapitalize="none"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    error={!!errors.username}
+                    style={styles.input}
+                  />
+                )}
+              />
+              {errors.email && (
+                <Text style={styles.error}>{errors.email.message}</Text>
+              )}
+
               <Controller
                 control={control}
                 name="username"
@@ -146,32 +179,6 @@ export default function SignInScreen() {
               {errors.username && (
                 <Text style={styles.error}>{errors.username.message}</Text>
               )}
-
-              <Controller
-                control={control}
-                name="password"
-                rules={{
-                  required: t("password.requiredError", {
-                    ns: "authentication",
-                  }),
-                }}
-                render={({ field: { onChange, value, onBlur } }) => (
-                  <TextInput
-                    label={t("password.title", { ns: "authentication" })}
-                    mode="outlined"
-                    secureTextEntry
-                    autoCapitalize="none"
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                    error={!!errors.password}
-                    style={styles.input}
-                  />
-                )}
-              />
-              {errors.password && (
-                <Text style={styles.error}>{errors.password.message}</Text>
-              )}
             </Card.Content>
             <Card.Actions>
               <Button
@@ -179,20 +186,14 @@ export default function SignInScreen() {
                 onPress={handleSubmit(onSubmit)}
                 loading={isSubmitting}
               >
-                {t("signin.title", { ns: "authentication" })}
+                {t("application.edit")}
               </Button>
             </Card.Actions>
           </Card>
-          <Button style={styles.button} onPress={goToSignUpPage}>
-            {t("signin.signUpText", { ns: "authentication" })}
-          </Button>
-          <Button style={styles.button} onPress={goToResetPasswordPage}>
-            {t("signin.forgotPasswordText", { ns: "authentication" })}
-          </Button>
         </View>
       </Surface>
       <Snackbar
-        visible={requestInformation.error !== undefined}
+        visible={errorMessage !== undefined}
         onDismiss={dismissError}
         action={{
           label: t("application.close"),

@@ -1,36 +1,45 @@
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import {
-    Button,
-    Card,
-    Snackbar,
-    Surface,
-    Text,
-    TextInput,
-    useTheme,
+  Button,
+  Card,
+  Snackbar,
+  Surface,
+  Text,
+  TextInput,
+  useTheme,
 } from "react-native-paper";
 
-import { useCreateUserMutation, UserSignUpDto } from "@/store/slices/apiSlice";
+import {
+  useConfirmEmailSendMutation,
+  useCreateUserMutation,
+  UserSignUpDto,
+} from "@/store/slices/apiSlice";
 import { emailRegex, strongPasswordRegex } from "@/store/utils/utilities";
 
 export default function SignUpScreen() {
+  const countdownSeconds = 10;
+
   const theme = useTheme();
   const router = useRouter();
   const { t } = useTranslation();
 
   const [success, setSuccess] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | undefined>(
-    undefined
-  );
+  const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
-  const [createUser, requestInformation] = useCreateUserMutation();
+  const [countdownStarted, setCountdownStarted] = useState(false);
+  const [timeRemaining, setTimeRemaining] = useState(countdownSeconds);
+  const [eventDate, setEventDate] = useState(0);
+
+  const [createUser, createUserRequestInformation] = useCreateUserMutation();
+  const [confirmEmailSend] = useConfirmEmailSendMutation();
 
   const {
-    reset,
     control,
+    getValues,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<UserSignUpDto>({
@@ -41,29 +50,69 @@ export default function SignUpScreen() {
     },
   });
 
+  useEffect(() => {
+    if (countdownStarted && eventDate) {
+      const countdownInterval = setInterval(() => {
+        const currentTime = new Date().getTime();
+        const requestTime = eventDate + countdownSeconds * 1000;
+
+        let remainingTime = requestTime - currentTime;
+        if (remainingTime <= 0) {
+          remainingTime = 0;
+          clearInterval(countdownInterval);
+        }
+
+        setTimeRemaining(Math.floor(remainingTime / 1000));
+      }, 1000);
+      return () => clearInterval(countdownInterval);
+    }
+  }, [countdownStarted, timeRemaining, eventDate]);
+
   const onSubmit: SubmitHandler<UserSignUpDto> = async (
     data: UserSignUpDto
   ) => {
     try {
+      setCountdownStarted(true);
+      setEventDate(new Date().getTime());
+
       const response = await createUser({
         userSignUpDto: data,
       }).unwrap();
-      console.log(response);
+
       if (response.success) {
-        console.log("Success!");
+        setSuccess(true);
       } else {
         throw Error(response.error);
       }
     } catch (err) {
       const error = err as any;
-      setErrorMessage(t(error.data.error, { ns: "error" }));
-    } finally {
-      reset();
+
+      let errorMessage = "unknownError";
+      if (error.data !== undefined && error.data !== null) {
+        errorMessage = error.data.error;
+      }
+      setErrorMessage(t(errorMessage, { ns: "error" }));
+    }
+  };
+
+  const resendConfirmationEmail = async () => {
+    try {
+      setCountdownStarted(true);
+      setEventDate(new Date().getTime());
+
+      await confirmEmailSend({
+        userEmailDto: {
+          email: getValues("email"),
+        },
+      });
+    } catch (err) {
+      const error = err as any;
+      setErrorMessage(t(error.date.error, { ns: "error" }));
     }
   };
 
   const dismissError = () => {
-    requestInformation.reset();
+    createUserRequestInformation.reset();
     setErrorMessage(undefined);
   };
 
@@ -79,9 +128,9 @@ export default function SignUpScreen() {
       padding: 10,
     },
     wrapper: {
-      width: "50%",
+      width: "100%",
       minWidth: 300,
-      maxWidth: 500,
+      maxWidth: 600,
       flex: 1,
       flexDirection: "column",
       alignItems: "center",
@@ -99,7 +148,7 @@ export default function SignUpScreen() {
       marginLeft: 5,
       color: theme.colors.error,
     },
-    signInButton: {
+    button: {
       marginTop: 10,
       width: "100%",
     },
@@ -109,12 +158,12 @@ export default function SignUpScreen() {
     <>
       <Surface style={styles.container} elevation={4}>
         <View style={styles.wrapper}>
-          {success ? (
+          {!success ? (
             <>
               <Card style={styles.card}>
                 <Card.Title
                   title={t("signup.title", { ns: "authentication" })}
-                  titleVariant="displayMedium"
+                  titleVariant="headlineMedium"
                 />
                 <Card.Content>
                   <Controller
@@ -216,37 +265,54 @@ export default function SignUpScreen() {
                   </Button>
                 </Card.Actions>
               </Card>
-              <Button style={styles.signInButton} onPress={goToSignInPage}>
+              <Button style={styles.button} onPress={goToSignInPage}>
                 {t("signup.signInText", { ns: "authentication" })}
               </Button>
             </>
           ) : (
-            <Card style={styles.card}>
-              <Card.Title
-                title={t("signup.success.title", { ns: "authentication" })}
-                style={{}}
-                titleVariant="titleMedium"
-              />
-              <Card.Content>
-                <Text>
-                  {t("signup.success.message", { ns: "authentication" })}
-                </Text>
-              </Card.Content>
-              <Card.Actions>
+            <>
+              <Card style={styles.card}>
+                <Card.Title
+                  title={t("signup.success.title", { ns: "authentication" })}
+                  style={{}}
+                  titleVariant="titleMedium"
+                />
+                <Card.Content>
+                  <Text>
+                    {t("signup.success.message", { ns: "authentication" })}
+                  </Text>
+                </Card.Content>
+                <Card.Actions>
+                  <Button onPress={goToSignInPage} mode="contained-tonal">
+                    {t("signin.title", { ns: "authentication" })}
+                  </Button>
+                </Card.Actions>
+              </Card>
+              {countdownStarted && (
                 <Button
-                  style={styles.signInButton}
-                  onPress={goToSignInPage}
-                  mode="contained-tonal"
+                  mode="elevated"
+                  disabled={timeRemaining !== 0}
+                  style={styles.button}
+                  onPress={resendConfirmationEmail}
                 >
-                  {t("signin.title", { ns: "authentication" })}
+                  {timeRemaining !== 0 ? (
+                    <Trans
+                      defaults={t("signup.resendConfirmationSeconds", {
+                        ns: "authentication",
+                      })}
+                      values={{ seconds: timeRemaining }}
+                    />
+                  ) : (
+                    t("signup.resendConfirmation", { ns: "authentication" })
+                  )}
                 </Button>
-              </Card.Actions>
-            </Card>
+              )}
+            </>
           )}
         </View>
       </Surface>
       <Snackbar
-        visible={requestInformation.error !== undefined}
+        visible={errorMessage !== undefined}
         onDismiss={dismissError}
         action={{
           label: t("application.close"),

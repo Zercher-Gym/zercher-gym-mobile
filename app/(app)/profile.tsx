@@ -1,44 +1,126 @@
-import { useGetProfileCurrentQuery } from "@/store/slices/apiSlice";
+import {
+  useDeleteProfileCurrentMutation,
+  useGetProfileCurrentQuery,
+  useResetPasswordSendMutation,
+} from "@/store/slices/apiSlice";
 import { useTranslation } from "react-i18next";
 import { ScrollView, StyleSheet } from "react-native";
 import {
-    Card,
-    IconButton,
-    List,
-    ProgressBar,
-    SegmentedButtons,
-    Surface,
-    Switch,
+  Button,
+  Card,
+  Dialog,
+  IconButton,
+  List,
+  Portal,
+  ProgressBar,
+  Snackbar,
+  Surface,
+  Switch,
+  Text,
+  useTheme,
 } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 
-import { supportedLanguages } from "@/store/i18n";
+import LanguageSelector from "@/components/shared/language-selector";
 import { removeToken } from "@/store/slices/authenticationSlice";
 import { selectThemeMode, toggleThemeMode } from "@/store/slices/themeSlice";
 import { formatDate } from "@/store/utils/utilities";
 import { useRouter } from "expo-router";
+import { useState } from "react";
 
 export default function Profile() {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const router = useRouter();
+
+  const theme = useTheme();
   const themeMode = useSelector(selectThemeMode);
 
+  const [infoMessage, setInfoMessage] = useState<string | undefined>();
+
   const { currentData, isSuccess } = useGetProfileCurrentQuery(undefined, {
-    refetchOnMountOrArgChange: 3000,
+    refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
   });
+
+  const [resetSent, setResetSent] = useState(false);
+  const [resetPasswordSend, resetPasswordSendInformation] =
+    useResetPasswordSendMutation();
+
+  const [deleteConfirmationVisible, setDeleteConfirmationVisible] =
+    useState(false);
+  const [deleteProfileCurrent] = useDeleteProfileCurrentMutation();
 
   const onToggleTheme = () => {
     dispatch(toggleThemeMode());
   };
 
-  const handleChangeLanguage = (language: string) => {
-    i18n.changeLanguage(language);
-  };
-
   const signOut = () => {
     dispatch(removeToken());
     router.navigate("/sign-in");
+  };
+
+  const sendResetPassword = async () => {
+    try {
+      await resetPasswordSend({
+        userEmailDto: {
+          email: currentData?.data?.email!,
+        },
+      }).unwrap();
+      setInfoMessage(
+        t("resetPassword.sucessMessage", { ns: "authentication" })
+      );
+      setResetSent(true);
+      setTimeout(() => {
+        setResetSent(false);
+      }, 30000);
+    } catch (err) {
+      const error = err as any;
+
+      let errorMessage = "unknownError";
+      if (error.data !== undefined && error.data !== null) {
+        errorMessage = error.data.error;
+      }
+      setInfoMessage(t(errorMessage, { ns: "error" }));
+    }
+  };
+
+  const dismissInfo = () => {
+    resetPasswordSendInformation.reset();
+    setInfoMessage(undefined);
+  };
+
+  const showDeleteConfirmationModal = () => {
+    setDeleteConfirmationVisible(true);
+  };
+
+  const dismissDeleteConfirmationModal = () => {
+    setDeleteConfirmationVisible(false);
+  };
+
+  const deleteProfile = async () => {
+    try {
+      await deleteProfileCurrent().unwrap();
+      setInfoMessage(
+        t("resetPassword.successMessage", { ns: "authentication" })
+      );
+      setTimeout(() => {
+        dispatch(removeToken());
+        router.navigate("/sign-in");
+      }, 5000);
+    } catch (err) {
+      const error = err as any;
+
+      let errorMessage = "unknownError";
+      if (error.data !== undefined && error.data !== null) {
+        errorMessage = error.data.error;
+      }
+      setInfoMessage(t(errorMessage, { ns: "error" }));
+    }
+  };
+
+  const goToProfileEdit = () => {
+    router.navigate("/profile-edit");
   };
 
   const styles = StyleSheet.create({
@@ -50,9 +132,9 @@ export default function Profile() {
       marginTop: 20,
     },
     card: {
-      marginTop: 50,
+      marginVertical: 20,
       paddingHorizontal: 10,
-      width: "60%",
+      width: "100%",
       minWidth: 300,
       maxWidth: 600,
       alignSelf: "center",
@@ -64,7 +146,7 @@ export default function Profile() {
   });
 
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <Surface style={styles.container} elevation={4}>
         <Card style={styles.card}>
           <Card.Title
@@ -81,7 +163,7 @@ export default function Profile() {
                 <List.Item
                   title={t("username.title", { ns: "authentication" })}
                   description={currentData.data?.username}
-                  left={(props) => <List.Icon {...props} icon="human" />}
+                  left={(props) => <List.Icon {...props} icon="account" />}
                 />
                 <List.Item
                   title={t("email.title", { ns: "authentication" })}
@@ -115,16 +197,7 @@ export default function Profile() {
                 <List.Item
                   title={""}
                   left={(props) => <List.Icon {...props} icon="translate" />}
-                  right={(props) => (
-                    <SegmentedButtons
-                      value={i18n.language}
-                      onValueChange={handleChangeLanguage}
-                      buttons={supportedLanguages.map((language) => ({
-                        value: language,
-                        label: language.toUpperCase(),
-                      }))}
-                    />
-                  )}
+                  right={(props) => <LanguageSelector />}
                 />
               </List.Section>
               <List.Section>
@@ -137,6 +210,37 @@ export default function Profile() {
                     <IconButton {...props} icon="logout" onPress={signOut} />
                   )}
                 />
+                <List.Item
+                  title={t("resetPassword.title", { ns: "authentication" })}
+                  right={(props) => (
+                    <IconButton
+                      {...props}
+                      icon="lock-reset"
+                      onPress={sendResetPassword}
+                      disabled={resetSent}
+                    />
+                  )}
+                />
+                <List.Item
+                  title={t("editProfile.title", { ns: "authentication" })}
+                  right={(props) => (
+                    <IconButton
+                      {...props}
+                      icon="pencil"
+                      onPress={goToProfileEdit}
+                    />
+                  )}
+                />
+                <List.Item
+                  title={t("deleteProfile.title", { ns: "authentication" })}
+                  right={(props) => (
+                    <IconButton
+                      {...props}
+                      icon="account-off"
+                      onPress={showDeleteConfirmationModal}
+                    />
+                  )}
+                />
               </List.Section>
             </Card.Content>
           ) : (
@@ -144,6 +248,42 @@ export default function Profile() {
           )}
         </Card>
       </Surface>
+      <Portal>
+        <Dialog
+          visible={deleteConfirmationVisible}
+          onDismiss={dismissDeleteConfirmationModal}
+        >
+          <Dialog.Title>
+            {t("deleteProfile.title", { ns: "authentication" })}
+          </Dialog.Title>
+          <Dialog.Content>
+            <Text variant="bodyMedium">
+              {t("deleteProfile.confirmationMessage", { ns: "authentication" })}
+            </Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button mode="contained" onPress={dismissDeleteConfirmationModal}>
+              {t("application.close")}
+            </Button>
+            <Button mode="outlined" onPress={deleteProfile}>
+              {t("application.delete")}
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+      <Snackbar
+        visible={
+          resetPasswordSendInformation.isSuccess ||
+          resetPasswordSendInformation.isError
+        }
+        onDismiss={dismissInfo}
+        action={{
+          label: t("application.close"),
+          onPress: dismissInfo,
+        }}
+      >
+        {infoMessage}
+      </Snackbar>
     </ScrollView>
   );
 }

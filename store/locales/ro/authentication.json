@@ -16,17 +16,23 @@
   "signin": {
     "title": "Autentifică-te",
     "badCredentialsError": "Credețiale invalide!",
-    "unknownError": "O eroare necunoscută s-a produs la autentificare! Vă rugăm să încercați din nou.",
+    "forgotPasswordText": "Ai uitat parola? Schimb-o aici",
     "signUpText": "Nu ai un cont? Înregistrează-te"
   },
   "signup": {
     "title": "Înregistrează-te",
-    "unknownError": "O eroare necunoscută s-a produs la înregistrare! Vă rugăm să încercați din nou.",
-    "signInText": "Ai deja un cont? Autentifică-te",
+    "signInText": "Aveți deja un cont? Autentificați-vă",
+    "resendConfirmation": "Retrimitere confirmare",
+    "resendConfirmationSeconds": "Retrimitere confirmare în {{seconds}} secunde.",
     "success": {
-      "title": "Mulțumim că te-ai întregistrat!",
-      "message": "Ar trebui să primești un email oricând pentru a-ți activa contul. Dacă nu găsești email-ul, atunci te rugăm să verifici și spam-ul."
+      "title": "Mulțumim că v-ați întregistrat!",
+      "message": "Ar trebui să primiți un email oricând pentru a vă activa contul. Dacă nu găsiți email-ul, vă rugăm să verificați și spam-ul."
     }
+  },
+  "resetPassword": {
+    "title": "Resetează parola",
+    "returnToSignIn": "Înapoi la autentificare",
+    "sucessMessage": "Un email a fost trimis la această adresă. Dacă nu găsiți email-ul, vă rugăm să verificați și spam-ul."
   },
   "profile": {
     "title": "Profil",
@@ -34,6 +40,14 @@
     "settings": "Setări",
     "actions": "Acțiuni cont",
     "memberSince": "Membru din"
+  },
+  "deleteProfile": {
+    "title": "Șterge profilul",
+    "confirmationMessage": "Sunteți sigur că doriți să vă ștergeți profilul? Vă rugăm să luați în considerare faptul că toate datele asociate contului dumneavoastră vor fi șterse împreună cu acesta!",
+    "success": "Profilul dumneavoastră a fost șters! A fost o plăcere!"
+  },
+  "editProfile": {
+    "title": "Editează profilul"
   },
   "signout": "Deconectare"
 }

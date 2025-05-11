@@ -1,4 +1,5 @@
 {
+  "unknownError": "O eroare necunoscută s-a produs! Vă rugăm încercați din nou mai târziu!",
   "accessDenied": "Acces interzis!",
   "userNotEnabled": "Contul dumneavoastră nu este activat! Vă rugăm să vă activați contul!",
   "userAuthenticationFailed": "Autentificarea utilizatorului a eșuat!",

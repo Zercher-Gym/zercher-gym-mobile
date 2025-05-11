@@ -1,7 +1,9 @@
 {
   "application": {
     "title": "Zercher Gym",
-    "close": "Închide"
+    "close": "Închide",
+    "delete": "Șterge",
+    "edit": "Editează"
   },
   "language": {
     "title": "Limbă",
