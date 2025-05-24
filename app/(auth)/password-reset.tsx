@@ -2,7 +2,7 @@ import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { StyleSheet, View } from "react-native";
+import { Keyboard, StyleSheet, View } from "react-native";
 import {
   Button,
   Card,
@@ -60,6 +60,8 @@ export default function PasswordResetScreen() {
         errorMessage = error.data.error;
       }
       setInfoMessage(t(errorMessage, { ns: "error" }));
+    } finally {
+      Keyboard.dismiss();
     }
   };
 
@@ -69,7 +71,7 @@ export default function PasswordResetScreen() {
   };
 
   const goToSignInPage = () => {
-    router.navigate("/sign-in");
+    router.replace("/sign-in");
   };
 
   const styles = StyleSheet.create({

@@ -5,6 +5,7 @@ import storage from "./utils/storage";
 
 import { api } from "./slices/apiSlice";
 import authenticationSlice from "./slices/authenticationSlice";
+import messageSlice from "./slices/messageSlice";
 import themeSlice from "./slices/themeSlice";
 
 const persistConfig = {
@@ -15,6 +16,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   theme: themeSlice.reducer,
+  message: messageSlice.reducer,
   authentication: authenticationSlice.reducer,
   api: api.reducer,
 });
