@@ -3,6 +3,8 @@ import {
   useGetProfileCurrentQuery,
   useResetPasswordSendMutation,
 } from "@/store/slices/apiSlice";
+import { useRouter } from "expo-router";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView, StyleSheet } from "react-native";
 import {
@@ -13,30 +15,24 @@ import {
   List,
   Portal,
   ProgressBar,
-  Snackbar,
   Surface,
   Switch,
   Text,
-  useTheme,
 } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 
 import LanguageSelector from "@/components/shared/language-selector";
 import { removeToken } from "@/store/slices/authenticationSlice";
+import { setMessage } from "@/store/slices/messageSlice";
 import { selectThemeMode, toggleThemeMode } from "@/store/slices/themeSlice";
 import { formatDate } from "@/store/utils/utilities";
-import { useRouter } from "expo-router";
-import { useState } from "react";
 
 export default function Profile() {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const theme = useTheme();
   const themeMode = useSelector(selectThemeMode);
-
-  const [infoMessage, setInfoMessage] = useState<string | undefined>();
 
   const { currentData, isSuccess } = useGetProfileCurrentQuery(undefined, {
     refetchOnMountOrArgChange: true,
@@ -57,7 +53,7 @@ export default function Profile() {
 
   const signOut = () => {
     dispatch(removeToken());
-    router.navigate("/sign-in");
+    router.replace("/sign-in");
   };
 
   const sendResetPassword = async () => {
@@ -67,8 +63,11 @@ export default function Profile() {
           email: currentData?.data?.email!,
         },
       }).unwrap();
-      setInfoMessage(
-        t("resetPassword.sucessMessage", { ns: "authentication" })
+      dispatch(
+        setMessage({
+          data: t("resetPassword.sucessMessage", { ns: "authentication" }),
+          type: "string",
+        })
       );
       setResetSent(true);
       setTimeout(() => {
@@ -76,18 +75,8 @@ export default function Profile() {
       }, 30000);
     } catch (err) {
       const error = err as any;
-
-      let errorMessage = "unknownError";
-      if (error.data !== undefined && error.data !== null) {
-        errorMessage = error.data.error;
-      }
-      setInfoMessage(t(errorMessage, { ns: "error" }));
+      dispatch(setMessage({ data: error, type: "payload" }));
     }
-  };
-
-  const dismissInfo = () => {
-    resetPasswordSendInformation.reset();
-    setInfoMessage(undefined);
   };
 
   const showDeleteConfirmationModal = () => {
@@ -101,21 +90,19 @@ export default function Profile() {
   const deleteProfile = async () => {
     try {
       await deleteProfileCurrent().unwrap();
-      setInfoMessage(
-        t("resetPassword.successMessage", { ns: "authentication" })
+      dispatch(
+        setMessage({
+          data: t("resetPassword.successMessage", { ns: "authentication" }),
+          type: "string",
+        })
       );
       setTimeout(() => {
         dispatch(removeToken());
-        router.navigate("/sign-in");
+        router.replace("/sign-in");
       }, 5000);
     } catch (err) {
       const error = err as any;
-
-      let errorMessage = "unknownError";
-      if (error.data !== undefined && error.data !== null) {
-        errorMessage = error.data.error;
-      }
-      setInfoMessage(t(errorMessage, { ns: "error" }));
+      dispatch(setMessage({ data: error, type: "payload" }));
     }
   };
 
@@ -195,8 +182,7 @@ export default function Profile() {
                   )}
                 />
                 <List.Item
-                  title={""}
-                  left={(props) => <List.Icon {...props} icon="translate" />}
+                  title={t("language.title")}
                   right={(props) => <LanguageSelector />}
                 />
               </List.Section>
@@ -271,19 +257,6 @@ export default function Profile() {
           </Dialog.Actions>
         </Dialog>
       </Portal>
-      <Snackbar
-        visible={
-          resetPasswordSendInformation.isSuccess ||
-          resetPasswordSendInformation.isError
-        }
-        onDismiss={dismissInfo}
-        action={{
-          label: t("application.close"),
-          onPress: dismissInfo,
-        }}
-      >
-        {infoMessage}
-      </Snackbar>
     </ScrollView>
   );
 }

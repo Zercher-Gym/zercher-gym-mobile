@@ -1,22 +1,40 @@
-import { supportedLanguages } from "@/store/i18n";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { SegmentedButtons } from "react-native-paper";
+import { IconButton, Menu } from "react-native-paper";
+
+import { supportedLanguages } from "@/store/i18n";
 
 export default function LanguageSelector() {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  const [visible, setVisible] = useState(false);
 
   const handleChangeLanguage = (language: string) => {
     i18n.changeLanguage(language);
+    closeMenu();
+  };
+
+  const openMenu = () => {
+    setVisible(true);
+  };
+
+  const closeMenu = () => {
+    setVisible(false);
   };
 
   return (
-    <SegmentedButtons
-      value={i18n.language}
-      onValueChange={handleChangeLanguage}
-      buttons={supportedLanguages.map((language) => ({
-        value: language,
-        label: language.toUpperCase(),
-      }))}
-    />
+    <Menu
+      visible={visible}
+      onDismiss={closeMenu}
+      anchor={<IconButton icon="translate" onPress={openMenu}></IconButton>}
+    >
+      {supportedLanguages.map((language) => (
+        <Menu.Item
+          key={language}
+          onPress={() => handleChangeLanguage(language)}
+          title={t(`language.${language}`)}
+        />
+      ))}
+    </Menu>
   );
 }

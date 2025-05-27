@@ -1,12 +1,11 @@
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { StyleSheet, View } from "react-native";
+import { Keyboard, StyleSheet, View } from "react-native";
 import {
   Button,
   Card,
-  Snackbar,
   Surface,
   Text,
   TextInput,
@@ -19,6 +18,7 @@ import {
   UserSignInDto,
 } from "@/store/slices/apiSlice";
 import { setToken } from "@/store/slices/authenticationSlice";
+import { setMessage } from "@/store/slices/messageSlice";
 
 export default function SignInScreen() {
   const dispatch = useDispatch();
@@ -26,9 +26,7 @@ export default function SignInScreen() {
   const router = useRouter();
   const { t } = useTranslation();
 
-  const [errorMessage, setErrorMessage] = useState<string | undefined>();
-
-  const [authenticateUser, requestInformation] = useAuthenticateUserMutation();
+  const [authenticateUser] = useAuthenticateUserMutation();
 
   const {
     reset,
@@ -50,32 +48,25 @@ export default function SignInScreen() {
         userSignInDto: data,
       }).unwrap();
       if (response.data) dispatch(setToken(response.data.toString()));
-      else throw Error(response.error);
-      router.navigate("/profile");
+      else {
+        dispatch(setMessage({ data: response.error!, type: "code" }));
+      }
+      router.replace("/profile");
     } catch (err) {
       const error = err as any;
-
-      let errorMessage = "unknownError";
-      if (error.data !== undefined && error.data !== null) {
-        errorMessage = error.data.error;
-      }
-      setErrorMessage(t(errorMessage, { ns: "error" }));
+      dispatch(setMessage({ data: error, type: "payload" }));
     } finally {
       reset();
+      Keyboard.dismiss();
     }
   };
 
-  const dismissError = () => {
-    requestInformation.reset();
-    setErrorMessage(undefined);
-  };
-
   const goToSignUpPage = () => {
-    router.navigate("/sign-up");
+    router.replace("/sign-up");
   };
 
   const goToResetPasswordPage = () => {
-    router.navigate("/password-reset");
+    router.replace("/password-reset");
   };
 
   const styles = StyleSheet.create({
@@ -113,94 +104,82 @@ export default function SignInScreen() {
   });
 
   return (
-    <>
-      <Surface style={styles.container} elevation={4}>
-        <View style={styles.wrapper}>
-          <Card style={styles.card}>
-            <Card.Title
-              title={t("signin.title", { ns: "authentication" })}
-              titleVariant="headlineMedium"
+    <Surface style={styles.container} elevation={4}>
+      <View style={styles.wrapper}>
+        <Card style={styles.card}>
+          <Card.Title
+            title={t("signin.title", { ns: "authentication" })}
+            titleVariant="headlineMedium"
+          />
+          <Card.Content>
+            <Controller
+              control={control}
+              name="username"
+              rules={{
+                required: t("username.requiredError", {
+                  ns: "authentication",
+                }),
+              }}
+              render={({ field: { onChange, value, onBlur } }) => (
+                <TextInput
+                  label={t("username.title", { ns: "authentication" })}
+                  mode="outlined"
+                  autoCapitalize="none"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  error={!!errors.username}
+                  style={styles.input}
+                />
+              )}
             />
-            <Card.Content>
-              <Controller
-                control={control}
-                name="username"
-                rules={{
-                  required: t("username.requiredError", {
-                    ns: "authentication",
-                  }),
-                }}
-                render={({ field: { onChange, value, onBlur } }) => (
-                  <TextInput
-                    label={t("username.title", { ns: "authentication" })}
-                    mode="outlined"
-                    autoCapitalize="none"
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                    error={!!errors.username}
-                    style={styles.input}
-                  />
-                )}
-              />
-              {errors.username && (
-                <Text style={styles.error}>{errors.username.message}</Text>
-              )}
+            {errors.username && (
+              <Text style={styles.error}>{errors.username.message}</Text>
+            )}
 
-              <Controller
-                control={control}
-                name="password"
-                rules={{
-                  required: t("password.requiredError", {
-                    ns: "authentication",
-                  }),
-                }}
-                render={({ field: { onChange, value, onBlur } }) => (
-                  <TextInput
-                    label={t("password.title", { ns: "authentication" })}
-                    mode="outlined"
-                    secureTextEntry
-                    autoCapitalize="none"
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                    error={!!errors.password}
-                    style={styles.input}
-                  />
-                )}
-              />
-              {errors.password && (
-                <Text style={styles.error}>{errors.password.message}</Text>
+            <Controller
+              control={control}
+              name="password"
+              rules={{
+                required: t("password.requiredError", {
+                  ns: "authentication",
+                }),
+              }}
+              render={({ field: { onChange, value, onBlur } }) => (
+                <TextInput
+                  label={t("password.title", { ns: "authentication" })}
+                  mode="outlined"
+                  secureTextEntry
+                  autoCapitalize="none"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  error={!!errors.password}
+                  style={styles.input}
+                />
               )}
-            </Card.Content>
-            <Card.Actions>
-              <Button
-                mode="contained"
-                onPress={handleSubmit(onSubmit)}
-                loading={isSubmitting}
-              >
-                {t("signin.title", { ns: "authentication" })}
-              </Button>
-            </Card.Actions>
-          </Card>
-          <Button style={styles.button} onPress={goToSignUpPage}>
-            {t("signin.signUpText", { ns: "authentication" })}
-          </Button>
-          <Button style={styles.button} onPress={goToResetPasswordPage}>
-            {t("signin.forgotPasswordText", { ns: "authentication" })}
-          </Button>
-        </View>
-      </Surface>
-      <Snackbar
-        visible={requestInformation.error !== undefined}
-        onDismiss={dismissError}
-        action={{
-          label: t("application.close"),
-          onPress: dismissError,
-        }}
-      >
-        {errorMessage}
-      </Snackbar>
-    </>
+            />
+            {errors.password && (
+              <Text style={styles.error}>{errors.password.message}</Text>
+            )}
+          </Card.Content>
+          <Card.Actions>
+            <Button
+              mode="contained"
+              onPress={handleSubmit(onSubmit)}
+              loading={isSubmitting}
+            >
+              {t("signin.title", { ns: "authentication" })}
+            </Button>
+          </Card.Actions>
+        </Card>
+        <Button style={styles.button} onPress={goToSignUpPage}>
+          {t("signin.signUpText", { ns: "authentication" })}
+        </Button>
+        <Button style={styles.button} onPress={goToResetPasswordPage}>
+          {t("signin.forgotPasswordText", { ns: "authentication" })}
+        </Button>
+      </View>
+    </Surface>
   );
 }

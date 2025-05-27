@@ -1,30 +1,40 @@
-import LanguageSelector from "@/components/shared/language-selector";
-import { selectIsSignedIn } from "@/store/slices/authenticationSlice";
-import { Redirect, Stack, useRouter } from "expo-router";
-import { Appbar } from "react-native-paper";
+import { Redirect, Stack } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
+
+import StackHeader from "@/components/shared/stack-header";
+import { selectIsSignedIn } from "@/store/slices/authenticationSlice";
 
 export default function AuthRoot() {
   const isSignedIn = useSelector(selectIsSignedIn);
-  const router = useRouter();
+  const { t } = useTranslation();
 
   if (isSignedIn) {
     return <Redirect href="/profile"></Redirect>;
   }
 
-  const goBack = () => {
-    if (router.canGoBack()) {
-      router.back();
-    }
-  };
-
   return (
-    <>
-      <Appbar elevated={true}>
-        <Appbar.BackAction onPress={goBack} style={{ marginRight: "auto" }} />
-        <LanguageSelector />
-      </Appbar>
-      <Stack screenOptions={{ headerShown: false }} />
-    </>
+    <Stack
+      screenOptions={{
+        header: (props) => (
+          <StackHeader navProps={props} showLanguageSelector={true}>
+            <></>
+          </StackHeader>
+        ),
+      }}
+    >
+      <Stack.Screen
+        name="sign-in"
+        options={{ title: t("application.title") }}
+      />
+      <Stack.Screen
+        name="sign-up"
+        options={{ title: t("application.title") }}
+      />
+      <Stack.Screen
+        name="password-reset"
+        options={{ title: t("application.title") }}
+      />
+    </Stack>
   );
 }
