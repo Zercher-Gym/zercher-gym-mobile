@@ -2,6 +2,9 @@
   "name": "zercher-gym",
   "main": "expo-router/entry",
   "version": "1.0.0",
+  "engines": {
+    "node": ">= 22.0.0"
+  },
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
@@ -45,7 +48,9 @@
     "react-native": "0.79.2",
     "react-native-css-interop": "^0.1.22",
     "react-native-gesture-handler": "~2.24.0",
+    "react-native-keyboard-controller": "^1.17.3",
     "react-native-paper": "^5.14.0",
+    "react-native-paper-dropdown": "^2.3.1",
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "^5.4.0",
     "react-native-screens": "~4.10.0",
@@ -53,7 +58,8 @@
     "react-native-web": "~0.20.0",
     "react-native-webview": "13.13.5",
     "react-redux": "^9.2.0",
-    "redux-persist": "^6.0.0"
+    "redux-persist": "^6.0.0",
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

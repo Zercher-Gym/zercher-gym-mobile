@@ -13,24 +13,19 @@ const MessageSnackbar = () => {
 
   useEffect(() => {
     if (message.type !== null) {
-      switch (message.type) {
-        case "code":
-          setDisplayMessage(t(message.data, { ns: "error" }));
-          break;
-        case "string":
-          setDisplayMessage(message.data);
-          break;
-        case "payload":
-          const payload = message.data as any;
-          if (payload.data !== null && payload.data !== undefined) {
-            setDisplayMessage(t(payload.data.error!, { ns: "error" }));
-          } else {
-            setDisplayMessage(payload);
-          }
-          break;
-        default:
+      if (message.type === "code") {
+        setDisplayMessage(t(message.data, { ns: "error" }));
+      } else if (message.type == "string") {
+        setDisplayMessage(message.data);
+      } else if (message.type == "payload") {
+        const payload = message.data as any;
+        if (payload.data !== null && payload.data !== undefined) {
+          setDisplayMessage(t(payload.data.error!, { ns: "error" }));
+        } else {
           setDisplayMessage(t("unknownError", { ns: "error" }));
-          break;
+        }
+      } else {
+        setDisplayMessage(t("unknownError", { ns: "error" }));
       }
       dispatch(setMessage({ data: null, type: null }));
     }

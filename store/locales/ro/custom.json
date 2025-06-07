@@ -1,0 +1,14 @@
+{
+  "title": {
+    "title": "Titlu",
+    "requiredError": "Vă rugăm să introduceți un titlu!"
+  },
+  "description": {
+    "title": "Descriere",
+    "requiredError": "Vă rugăm să introduceți o descriere!"
+  },
+  "unit": {
+    "title": "Unitate",
+    "requiredError": "Vă rugăm să selectați o unitate!"
+  }
+}

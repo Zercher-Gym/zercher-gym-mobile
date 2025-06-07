@@ -32,7 +32,7 @@
   "resetPassword": {
     "title": "Reset password",
     "returnToSignIn": "Back to sign in",
-    "sucessMessage": "An email has been sent to this address. If you don't see the email, please check your spam as well."
+    "successMessage": "An email has been sent to this address. If you don't see the email, please check your spam as well."
   },
   "profile": {
     "title": "Profile",

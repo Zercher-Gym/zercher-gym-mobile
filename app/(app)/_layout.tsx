@@ -38,6 +38,10 @@ export default function AppLayout() {
         }}
       >
         <Stack.Screen
+          name="custom"
+          options={{ title: t("application.title") }}
+        />
+        <Stack.Screen
           name="profile"
           options={{ title: t("application.title") }}
         />
@@ -60,7 +64,7 @@ export default function AppLayout() {
         <Appbar.Action
           icon="dumbbell"
           size={36}
-          onPress={() => redirectToPage("/profile")}
+          onPress={() => redirectToPage("/custom")}
         />
         <Appbar.Action
           icon="account"

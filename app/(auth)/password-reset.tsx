@@ -13,6 +13,7 @@ import {
   useTheme,
 } from "react-native-paper";
 
+import DismissKeyboard from "@/components/shared/dismiss-keyboard";
 import {
   UserEmailDto,
   useResetPasswordSendMutation,
@@ -111,60 +112,62 @@ export default function PasswordResetScreen() {
   return (
     <>
       <Surface style={styles.container} elevation={4}>
-        <View style={styles.wrapper}>
-          <Card style={styles.card}>
-            <Card.Title
-              title={t("resetPassword.title", { ns: "authentication" })}
-              titleVariant="headlineSmall"
-            />
-            <Card.Content>
-              <Controller
-                control={control}
-                name="email"
-                rules={{
-                  required: t("email.requiredError", {
-                    ns: "authentication",
-                  }),
-                  pattern: {
-                    value: emailRegex,
-                    message: t("email.invalidError", {
+        <DismissKeyboard>
+          <View style={styles.wrapper}>
+            <Card style={styles.card}>
+              <Card.Title
+                title={t("resetPassword.title", { ns: "authentication" })}
+                titleVariant="headlineSmall"
+              />
+              <Card.Content>
+                <Controller
+                  control={control}
+                  name="email"
+                  rules={{
+                    required: t("email.requiredError", {
                       ns: "authentication",
                     }),
-                  },
-                }}
-                render={({ field: { onChange, value, onBlur } }) => (
-                  <TextInput
-                    disabled={resetSent}
-                    label={t("email.title", { ns: "authentication" })}
-                    mode="outlined"
-                    autoCapitalize="none"
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                    error={!!errors.email}
-                    style={styles.input}
-                  />
+                    pattern: {
+                      value: emailRegex,
+                      message: t("email.invalidError", {
+                        ns: "authentication",
+                      }),
+                    },
+                  }}
+                  render={({ field: { onChange, value, onBlur } }) => (
+                    <TextInput
+                      disabled={resetSent}
+                      label={t("email.title", { ns: "authentication" })}
+                      mode="outlined"
+                      autoCapitalize="none"
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      error={!!errors.email}
+                      style={styles.input}
+                    />
+                  )}
+                />
+                {errors.email && (
+                  <Text style={styles.error}>{errors.email.message}</Text>
                 )}
-              />
-              {errors.email && (
-                <Text style={styles.error}>{errors.email.message}</Text>
-              )}
-            </Card.Content>
-            <Card.Actions>
-              <Button
-                disabled={resetSent}
-                mode="contained"
-                onPress={handleSubmit(onSubmit)}
-                loading={isSubmitting}
-              >
-                {t("resetPassword.title", { ns: "authentication" })}
-              </Button>
-            </Card.Actions>
-          </Card>
-          <Button style={styles.signUpButton} onPress={goToSignInPage}>
-            {t("resetPassword.returnToSignIn", { ns: "authentication" })}
-          </Button>
-        </View>
+              </Card.Content>
+              <Card.Actions>
+                <Button
+                  disabled={resetSent}
+                  mode="contained"
+                  onPress={handleSubmit(onSubmit)}
+                  loading={isSubmitting}
+                >
+                  {t("resetPassword.title", { ns: "authentication" })}
+                </Button>
+              </Card.Actions>
+            </Card>
+            <Button style={styles.signUpButton} onPress={goToSignInPage}>
+              {t("resetPassword.returnToSignIn", { ns: "authentication" })}
+            </Button>
+          </View>
+        </DismissKeyboard>
       </Surface>
       <Snackbar
         visible={

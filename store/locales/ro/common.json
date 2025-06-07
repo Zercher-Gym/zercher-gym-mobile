@@ -4,7 +4,8 @@
     "close": "Închide",
     "delete": "Șterge",
     "edit": "Editează",
-    "back": "Înapoi"
+    "back": "Înapoi",
+    "create": "Creează"
   },
   "language": {
     "title": "Limbă",
@@ -20,5 +21,17 @@
     "title": "Pagina nu a fost găsită!",
     "description": "Pagina nu a putut fi găsită! Va puteți întoarce la pagina de profil totuși.",
     "button": "Înapoi la profil"
+  },
+  "customExercise": {
+    "title": "Exercițiile tale",
+    "add": "Adaugă exercițiu",
+    "delete": "Șterge exercițiu",
+    "deleteConfirmation": "Ești sigur că dorești să ștergi acest exercițiu?"
+  },
+  "customWorkout": {
+    "title": "Antrenamentele tale",
+    "add": "Adaugă antrenament",
+    "delete": "Șterge antrenament",
+    "deleteConfirmation": "Ești sigur că dorești să ștergi acest antrenament?"
   }
 }
