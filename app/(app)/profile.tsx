@@ -14,14 +14,14 @@ import {
   IconButton,
   List,
   Portal,
-  ProgressBar,
   Surface,
   Switch,
-  Text,
+  Text
 } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 
 import LanguageSelector from "@/components/shared/language-selector";
+import LinearProgressBar from "@/components/shared/progress-bar";
 import { removeToken } from "@/store/slices/authenticationSlice";
 import { setMessage } from "@/store/slices/messageSlice";
 import { selectThemeMode, toggleThemeMode } from "@/store/slices/themeSlice";
@@ -230,7 +230,7 @@ export default function Profile() {
               </List.Section>
             </Card.Content>
           ) : (
-            <ProgressBar indeterminate={true} style={styles.loadingBar} />
+            <LinearProgressBar />
           )}
         </Card>
       </Surface>

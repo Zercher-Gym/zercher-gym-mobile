@@ -38,6 +38,18 @@ export default function AppLayout() {
         }}
       >
         <Stack.Screen
+          name="workout/list"
+          options={{ title: t("application.title") }}
+        />
+        <Stack.Screen
+          name="workout/add"
+          options={{ title: t("application.workout") }}
+        />
+        <Stack.Screen
+          name="workout/edit/[id]"
+          options={{ title: t("application.workout") }}
+        />
+        <Stack.Screen
           name="profile"
           options={{ title: t("application.title") }}
         />
@@ -60,7 +72,7 @@ export default function AppLayout() {
         <Appbar.Action
           icon="dumbbell"
           size={36}
-          onPress={() => redirectToPage("/profile")}
+          onPress={() => redirectToPage("/workout/list")}
         />
         <Appbar.Action
           icon="account"

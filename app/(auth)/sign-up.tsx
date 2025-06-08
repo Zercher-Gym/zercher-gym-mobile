@@ -9,16 +9,18 @@ import {
   Surface,
   Text,
   TextInput,
-  useTheme
+  useTheme,
 } from "react-native-paper";
+import { useDispatch } from "react-redux";
 
+import DismissKeyboard from "@/components/shared/dismiss-keyboard";
 import {
   useConfirmEmailSendMutation,
   useCreateUserMutation,
   UserSignUpDto,
 } from "@/store/slices/apiSlice";
+import { setMessage } from "@/store/slices/messageSlice";
 import { emailRegex, strongPasswordRegex } from "@/store/utils/utilities";
-import { useDispatch } from "react-redux";
 
 export default function SignUpScreen() {
   const countdownSeconds = 10;
@@ -82,11 +84,11 @@ export default function SignUpScreen() {
       if (response.success) {
         setSuccess(true);
       } else {
-        dispatch(setError(response.error!));
+        dispatch(setMessage({ data: response.error!, type: "code" }));
       }
     } catch (err) {
       const error = err as any;
-      dispatch(setError(error));
+      dispatch(setMessage({ data: error, type: "payload" }));
     } finally {
       Keyboard.dismiss();
     }
@@ -104,7 +106,7 @@ export default function SignUpScreen() {
       });
     } catch (err) {
       const error = err as any;
-      dispatch(setError(error));
+      dispatch(setMessage({ data: error, type: "payload" }));
     }
   };
 
@@ -148,159 +150,161 @@ export default function SignUpScreen() {
 
   return (
     <Surface style={styles.container} elevation={4}>
-      <View style={styles.wrapper}>
-        {!success ? (
-          <>
-            <Card style={styles.card}>
-              <Card.Title
-                title={t("signup.title", { ns: "authentication" })}
-                titleVariant="headlineMedium"
-              />
-              <Card.Content>
-                <Controller
-                  control={control}
-                  name="email"
-                  rules={{
-                    required: t("email.requiredError", {
-                      ns: "authentication",
-                    }),
-                    pattern: {
-                      value: emailRegex,
-                      message: t("email.invalidError", {
+      <DismissKeyboard>
+        <View style={styles.wrapper}>
+          {!success ? (
+            <>
+              <Card style={styles.card}>
+                <Card.Title
+                  title={t("signup.title", { ns: "authentication" })}
+                  titleVariant="headlineMedium"
+                />
+                <Card.Content>
+                  <Controller
+                    control={control}
+                    name="email"
+                    rules={{
+                      required: t("email.requiredError", {
                         ns: "authentication",
                       }),
-                    },
-                  }}
-                  render={({ field: { onChange, value, onBlur } }) => (
-                    <TextInput
-                      label={t("email.title", { ns: "authentication" })}
-                      inputMode="email"
-                      mode="outlined"
-                      autoCapitalize="none"
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      error={!!errors.username}
-                      style={styles.input}
-                    />
-                  )}
-                />
-                {errors.email && (
-                  <Text style={styles.error}>{errors.email.message}</Text>
-                )}
-
-                <Controller
-                  control={control}
-                  name="username"
-                  rules={{
-                    required: t("username.requiredError", {
-                      ns: "authentication",
-                    }),
-                  }}
-                  render={({ field: { onChange, value, onBlur } }) => (
-                    <TextInput
-                      label={t("username.title", { ns: "authentication" })}
-                      mode="outlined"
-                      autoCapitalize="none"
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      error={!!errors.username}
-                      style={styles.input}
-                    />
-                  )}
-                />
-                {errors.username && (
-                  <Text style={styles.error}>{errors.username.message}</Text>
-                )}
-
-                <Controller
-                  control={control}
-                  name="password"
-                  rules={{
-                    required: t("password.requiredError", {
-                      ns: "authentication",
-                    }),
-                    pattern: {
-                      value: strongPasswordRegex,
-                      message: t("password.strongPasswordError", {
-                        ns: "authentication",
-                      }),
-                    },
-                  }}
-                  render={({ field: { onChange, value, onBlur } }) => (
-                    <TextInput
-                      label={t("password.title", { ns: "authentication" })}
-                      mode="outlined"
-                      secureTextEntry
-                      autoCapitalize="none"
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                      error={!!errors.password}
-                      style={styles.input}
-                    />
-                  )}
-                />
-                {errors.password && (
-                  <Text style={styles.error}>{errors.password.message}</Text>
-                )}
-              </Card.Content>
-              <Card.Actions>
-                <Button
-                  mode="contained"
-                  onPress={handleSubmit(onSubmit)}
-                  loading={isSubmitting}
-                >
-                  {t("signup.title", { ns: "authentication" })}
-                </Button>
-              </Card.Actions>
-            </Card>
-            <Button style={styles.button} onPress={goToSignInPage}>
-              {t("signup.signInText", { ns: "authentication" })}
-            </Button>
-          </>
-        ) : (
-          <>
-            <Card style={styles.card}>
-              <Card.Title
-                title={t("signup.success.title", { ns: "authentication" })}
-                style={{}}
-                titleVariant="titleMedium"
-              />
-              <Card.Content>
-                <Text>
-                  {t("signup.success.message", { ns: "authentication" })}
-                </Text>
-              </Card.Content>
-              <Card.Actions>
-                <Button onPress={goToSignInPage} mode="contained-tonal">
-                  {t("signin.title", { ns: "authentication" })}
-                </Button>
-              </Card.Actions>
-            </Card>
-            {countdownStarted && (
-              <Button
-                mode="elevated"
-                disabled={timeRemaining !== 0}
-                style={styles.button}
-                onPress={resendConfirmationEmail}
-              >
-                {timeRemaining !== 0 ? (
-                  <Trans
-                    defaults={t("signup.resendConfirmationSeconds", {
-                      ns: "authentication",
-                    })}
-                    values={{ seconds: timeRemaining }}
+                      pattern: {
+                        value: emailRegex,
+                        message: t("email.invalidError", {
+                          ns: "authentication",
+                        }),
+                      },
+                    }}
+                    render={({ field: { onChange, value, onBlur } }) => (
+                      <TextInput
+                        label={t("email.title", { ns: "authentication" })}
+                        inputMode="email"
+                        mode="outlined"
+                        autoCapitalize="none"
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                        error={!!errors.username}
+                        style={styles.input}
+                      />
+                    )}
                   />
-                ) : (
-                  t("signup.resendConfirmation", { ns: "authentication" })
-                )}
+                  {errors.email && (
+                    <Text style={styles.error}>{errors.email.message}</Text>
+                  )}
+
+                  <Controller
+                    control={control}
+                    name="username"
+                    rules={{
+                      required: t("username.requiredError", {
+                        ns: "authentication",
+                      }),
+                    }}
+                    render={({ field: { onChange, value, onBlur } }) => (
+                      <TextInput
+                        label={t("username.title", { ns: "authentication" })}
+                        mode="outlined"
+                        autoCapitalize="none"
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                        error={!!errors.username}
+                        style={styles.input}
+                      />
+                    )}
+                  />
+                  {errors.username && (
+                    <Text style={styles.error}>{errors.username.message}</Text>
+                  )}
+
+                  <Controller
+                    control={control}
+                    name="password"
+                    rules={{
+                      required: t("password.requiredError", {
+                        ns: "authentication",
+                      }),
+                      pattern: {
+                        value: strongPasswordRegex,
+                        message: t("password.strongPasswordError", {
+                          ns: "authentication",
+                        }),
+                      },
+                    }}
+                    render={({ field: { onChange, value, onBlur } }) => (
+                      <TextInput
+                        label={t("password.title", { ns: "authentication" })}
+                        mode="outlined"
+                        secureTextEntry
+                        autoCapitalize="none"
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                        error={!!errors.password}
+                        style={styles.input}
+                      />
+                    )}
+                  />
+                  {errors.password && (
+                    <Text style={styles.error}>{errors.password.message}</Text>
+                  )}
+                </Card.Content>
+                <Card.Actions>
+                  <Button
+                    mode="contained"
+                    onPress={handleSubmit(onSubmit)}
+                    loading={isSubmitting}
+                  >
+                    {t("signup.title", { ns: "authentication" })}
+                  </Button>
+                </Card.Actions>
+              </Card>
+              <Button style={styles.button} onPress={goToSignInPage}>
+                {t("signup.signInText", { ns: "authentication" })}
               </Button>
-            )}
-          </>
-        )}
-      </View>
+            </>
+          ) : (
+            <>
+              <Card style={styles.card}>
+                <Card.Title
+                  title={t("signup.success.title", { ns: "authentication" })}
+                  style={{}}
+                  titleVariant="titleMedium"
+                />
+                <Card.Content>
+                  <Text>
+                    {t("signup.success.message", { ns: "authentication" })}
+                  </Text>
+                </Card.Content>
+                <Card.Actions>
+                  <Button onPress={goToSignInPage} mode="contained-tonal">
+                    {t("signin.title", { ns: "authentication" })}
+                  </Button>
+                </Card.Actions>
+              </Card>
+              {countdownStarted && (
+                <Button
+                  mode="elevated"
+                  disabled={timeRemaining !== 0}
+                  style={styles.button}
+                  onPress={resendConfirmationEmail}
+                >
+                  {timeRemaining !== 0 ? (
+                    <Trans
+                      defaults={t("signup.resendConfirmationSeconds", {
+                        ns: "authentication",
+                      })}
+                      values={{ seconds: timeRemaining }}
+                    />
+                  ) : (
+                    t("signup.resendConfirmation", { ns: "authentication" })
+                  )}
+                </Button>
+              )}
+            </>
+          )}
+        </View>
+      </DismissKeyboard>
     </Surface>
   );
 }

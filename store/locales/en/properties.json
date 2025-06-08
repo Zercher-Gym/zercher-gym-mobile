@@ -1,0 +1,17 @@
+{
+  "title": {
+    "title": "Title",
+    "requiredError": "Please enter a title!"
+  },
+  "description": {
+    "title": "Description",
+    "requiredError": "Please enter a description!"
+  },
+  "unit": {
+    "title": "Unit",
+    "requiredError": "Please select a unit!"
+  },
+  "quantity": {
+    "requiredError": "Please enter a quantity!"
+  }
+}

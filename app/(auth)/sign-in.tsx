@@ -13,6 +13,7 @@ import {
 } from "react-native-paper";
 import { useDispatch } from "react-redux";
 
+import DismissKeyboard from "@/components/shared/dismiss-keyboard";
 import {
   useAuthenticateUserMutation,
   UserSignInDto,
@@ -105,81 +106,83 @@ export default function SignInScreen() {
 
   return (
     <Surface style={styles.container} elevation={4}>
-      <View style={styles.wrapper}>
-        <Card style={styles.card}>
-          <Card.Title
-            title={t("signin.title", { ns: "authentication" })}
-            titleVariant="headlineMedium"
-          />
-          <Card.Content>
-            <Controller
-              control={control}
-              name="username"
-              rules={{
-                required: t("username.requiredError", {
-                  ns: "authentication",
-                }),
-              }}
-              render={({ field: { onChange, value, onBlur } }) => (
-                <TextInput
-                  label={t("username.title", { ns: "authentication" })}
-                  mode="outlined"
-                  autoCapitalize="none"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  error={!!errors.username}
-                  style={styles.input}
-                />
-              )}
+      <DismissKeyboard>
+        <View style={styles.wrapper}>
+          <Card style={styles.card}>
+            <Card.Title
+              title={t("signin.title", { ns: "authentication" })}
+              titleVariant="headlineMedium"
             />
-            {errors.username && (
-              <Text style={styles.error}>{errors.username.message}</Text>
-            )}
+            <Card.Content>
+              <Controller
+                control={control}
+                name="username"
+                rules={{
+                  required: t("username.requiredError", {
+                    ns: "authentication",
+                  }),
+                }}
+                render={({ field: { onChange, value, onBlur } }) => (
+                  <TextInput
+                    label={t("username.title", { ns: "authentication" })}
+                    mode="outlined"
+                    autoCapitalize="none"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    error={!!errors.username}
+                    style={styles.input}
+                  />
+                )}
+              />
+              {errors.username && (
+                <Text style={styles.error}>{errors.username.message}</Text>
+              )}
 
-            <Controller
-              control={control}
-              name="password"
-              rules={{
-                required: t("password.requiredError", {
-                  ns: "authentication",
-                }),
-              }}
-              render={({ field: { onChange, value, onBlur } }) => (
-                <TextInput
-                  label={t("password.title", { ns: "authentication" })}
-                  mode="outlined"
-                  secureTextEntry
-                  autoCapitalize="none"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  error={!!errors.password}
-                  style={styles.input}
-                />
+              <Controller
+                control={control}
+                name="password"
+                rules={{
+                  required: t("password.requiredError", {
+                    ns: "authentication",
+                  }),
+                }}
+                render={({ field: { onChange, value, onBlur } }) => (
+                  <TextInput
+                    label={t("password.title", { ns: "authentication" })}
+                    mode="outlined"
+                    secureTextEntry
+                    autoCapitalize="none"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    error={!!errors.password}
+                    style={styles.input}
+                  />
+                )}
+              />
+              {errors.password && (
+                <Text style={styles.error}>{errors.password.message}</Text>
               )}
-            />
-            {errors.password && (
-              <Text style={styles.error}>{errors.password.message}</Text>
-            )}
-          </Card.Content>
-          <Card.Actions>
-            <Button
-              mode="contained"
-              onPress={handleSubmit(onSubmit)}
-              loading={isSubmitting}
-            >
-              {t("signin.title", { ns: "authentication" })}
-            </Button>
-          </Card.Actions>
-        </Card>
-        <Button style={styles.button} onPress={goToSignUpPage}>
-          {t("signin.signUpText", { ns: "authentication" })}
-        </Button>
-        <Button style={styles.button} onPress={goToResetPasswordPage}>
-          {t("signin.forgotPasswordText", { ns: "authentication" })}
-        </Button>
-      </View>
+            </Card.Content>
+            <Card.Actions>
+              <Button
+                mode="contained"
+                onPress={handleSubmit(onSubmit)}
+                loading={isSubmitting}
+              >
+                {t("signin.title", { ns: "authentication" })}
+              </Button>
+            </Card.Actions>
+          </Card>
+          <Button style={styles.button} onPress={goToSignUpPage}>
+            {t("signin.signUpText", { ns: "authentication" })}
+          </Button>
+          <Button style={styles.button} onPress={goToResetPasswordPage}>
+            {t("signin.forgotPasswordText", { ns: "authentication" })}
+          </Button>
+        </View>
+      </DismissKeyboard>
     </Surface>
   );
 }

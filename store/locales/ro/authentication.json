@@ -32,7 +32,7 @@
   "resetPassword": {
     "title": "Resetează parola",
     "returnToSignIn": "Înapoi la autentificare",
-    "sucessMessage": "Un email a fost trimis la această adresă. Dacă nu găsiți email-ul, vă rugăm să verificați și spam-ul."
+    "successMessage": "Un email a fost trimis la această adresă. Dacă nu găsiți email-ul, vă rugăm să verificați și spam-ul."
   },
   "profile": {
     "title": "Profil",

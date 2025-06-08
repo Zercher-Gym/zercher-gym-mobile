@@ -9,10 +9,11 @@ import {
   Surface,
   Text,
   TextInput,
-  useTheme
+  useTheme,
 } from "react-native-paper";
 import { useDispatch } from "react-redux";
 
+import DismissKeyboard from "@/components/shared/dismiss-keyboard";
 import {
   useGetProfileCurrentQuery,
   UserUpdateDto,
@@ -27,7 +28,7 @@ export default function ProfileEditPage() {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
-  const [updateProfile, updateProfileInformation] = useUpdateProfileMutation();
+  const [updateProfile] = useUpdateProfileMutation();
 
   const { currentData, isSuccess } = useGetProfileCurrentQuery(undefined, {
     refetchOnMountOrArgChange: true,
@@ -107,81 +108,83 @@ export default function ProfileEditPage() {
 
   return (
     <Surface style={styles.container} elevation={4}>
-      <View style={styles.wrapper}>
-        <Card style={styles.card}>
-          <Card.Title
-            title={t("editProfile.title", { ns: "authentication" })}
-            titleVariant="headlineMedium"
-          />
-          <Card.Content>
-            <Controller
-              control={control}
-              name="email"
-              rules={{
-                required: t("email.requiredError", {
-                  ns: "authentication",
-                }),
-                pattern: {
-                  value: emailRegex,
-                  message: t("email.invalidError", {
+      <DismissKeyboard>
+        <View style={styles.wrapper}>
+          <Card style={styles.card}>
+            <Card.Title
+              title={t("editProfile.title", { ns: "authentication" })}
+              titleVariant="headlineMedium"
+            />
+            <Card.Content>
+              <Controller
+                control={control}
+                name="email"
+                rules={{
+                  required: t("email.requiredError", {
                     ns: "authentication",
                   }),
-                },
-              }}
-              render={({ field: { onChange, value, onBlur } }) => (
-                <TextInput
-                  label={t("email.title", { ns: "authentication" })}
-                  inputMode="email"
-                  mode="outlined"
-                  autoCapitalize="none"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  error={!!errors.username}
-                  style={styles.input}
-                />
+                  pattern: {
+                    value: emailRegex,
+                    message: t("email.invalidError", {
+                      ns: "authentication",
+                    }),
+                  },
+                }}
+                render={({ field: { onChange, value, onBlur } }) => (
+                  <TextInput
+                    label={t("email.title", { ns: "authentication" })}
+                    inputMode="email"
+                    mode="outlined"
+                    autoCapitalize="none"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    error={!!errors.username}
+                    style={styles.input}
+                  />
+                )}
+              />
+              {errors.email && (
+                <Text style={styles.error}>{errors.email.message}</Text>
               )}
-            />
-            {errors.email && (
-              <Text style={styles.error}>{errors.email.message}</Text>
-            )}
 
-            <Controller
-              control={control}
-              name="username"
-              rules={{
-                required: t("username.requiredError", {
-                  ns: "authentication",
-                }),
-              }}
-              render={({ field: { onChange, value, onBlur } }) => (
-                <TextInput
-                  label={t("username.title", { ns: "authentication" })}
-                  mode="outlined"
-                  autoCapitalize="none"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  error={!!errors.username}
-                  style={styles.input}
-                />
+              <Controller
+                control={control}
+                name="username"
+                rules={{
+                  required: t("username.requiredError", {
+                    ns: "authentication",
+                  }),
+                }}
+                render={({ field: { onChange, value, onBlur } }) => (
+                  <TextInput
+                    label={t("username.title", { ns: "authentication" })}
+                    mode="outlined"
+                    autoCapitalize="none"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    error={!!errors.username}
+                    style={styles.input}
+                  />
+                )}
+              />
+              {errors.username && (
+                <Text style={styles.error}>{errors.username.message}</Text>
               )}
-            />
-            {errors.username && (
-              <Text style={styles.error}>{errors.username.message}</Text>
-            )}
-          </Card.Content>
-          <Card.Actions>
-            <Button
-              mode="contained"
-              onPress={handleSubmit(onSubmit)}
-              loading={isSubmitting}
-            >
-              {t("application.edit")}
-            </Button>
-          </Card.Actions>
-        </Card>
-      </View>
+            </Card.Content>
+            <Card.Actions>
+              <Button
+                mode="contained"
+                onPress={handleSubmit(onSubmit)}
+                loading={isSubmitting}
+              >
+                {t("application.edit")}
+              </Button>
+            </Card.Actions>
+          </Card>
+        </View>
+      </DismissKeyboard>
     </Surface>
   );
 }
