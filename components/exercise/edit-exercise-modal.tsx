@@ -1,43 +1,49 @@
+import { setMessage } from "@/store/slices/messageSlice";
+import { useEffect } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import {
-    Button,
-    IconButton,
-    Modal,
-    Surface,
-    Text,
-    TextInput,
-    useTheme,
+  Button,
+  IconButton,
+  Modal,
+  Surface,
+  Text,
+  TextInput,
+  useTheme,
 } from "react-native-paper";
 import { Dropdown } from "react-native-paper-dropdown";
 import { useDispatch } from "react-redux";
 
 import {
-    CustomExerciseCreateDto,
-    useCreateCustomExerciseMutation,
-    useGetUnitsQuery,
+  CustomExerciseUpdateDto,
+  CustomExerciseViewDto,
+  useGetUnitsQuery,
+  useUpdateCustomExerciseMutation,
 } from "@/store/slices/apiSlice";
-import { setMessage } from "@/store/slices/messageSlice";
 import DismissKeyboard from "../shared/dismiss-keyboard";
 import { modalStyles } from "../styles/modal";
-import { IModalProps } from "../types/modal-props";
+import { IModalPropsSuccess } from "../types/modal-props";
 
-const AddExerciseModal = (props: IModalProps) => {
+interface IEditExerciseModal extends IModalPropsSuccess {
+  customExercise: CustomExerciseViewDto | null;
+}
+
+const EditExerciseModal = (props: IEditExerciseModal) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const dispatch = useDispatch();
 
   const units = useGetUnitsQuery({ page: 0, size: 20 });
 
-  const [createCustomExercise] = useCreateCustomExerciseMutation();
+  const [updateCustomExercise] = useUpdateCustomExerciseMutation();
 
   const {
     reset,
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<CustomExerciseCreateDto>({
+  } = useForm<CustomExerciseUpdateDto>({
     defaultValues: {
       title: "",
       description: "",
@@ -45,12 +51,21 @@ const AddExerciseModal = (props: IModalProps) => {
     },
   });
 
-  const onSubmit: SubmitHandler<CustomExerciseCreateDto> = async (
-    data: CustomExerciseCreateDto
+  useEffect(() => {
+    reset({
+      title: props.customExercise?.title,
+      description: props.customExercise?.description,
+      unitId: props.customExercise?.unit.id,
+    });
+  }, [props.customExercise]);
+
+  const onSubmit: SubmitHandler<CustomExerciseUpdateDto> = async (
+    data: CustomExerciseUpdateDto
   ) => {
     try {
-      await createCustomExercise({
-        customExerciseCreateDto: data,
+      await updateCustomExercise({
+        id: props.customExercise!.id,
+        customExerciseUpdateDto: data,
       }).unwrap();
     } catch (err) {
       const error = err as any;
@@ -92,12 +107,12 @@ const AddExerciseModal = (props: IModalProps) => {
             name="title"
             rules={{
               required: t("title.requiredError", {
-                ns: "custom",
+                ns: "properties",
               }),
             }}
             render={({ field: { onChange, value, onBlur } }) => (
               <TextInput
-                label={t("title.title", { ns: "custom" })}
+                label={t("title.title", { ns: "properties" })}
                 mode="outlined"
                 autoCapitalize="none"
                 onBlur={onBlur}
@@ -116,7 +131,7 @@ const AddExerciseModal = (props: IModalProps) => {
             name="description"
             render={({ field: { onChange, value, onBlur } }) => (
               <TextInput
-                label={t("description.title", { ns: "custom" })}
+                label={t("description.title", { ns: "properties" })}
                 mode="outlined"
                 autoCapitalize="none"
                 onBlur={onBlur}
@@ -137,7 +152,7 @@ const AddExerciseModal = (props: IModalProps) => {
               <View style={modalStyles.input}>
                 <Dropdown
                   mode="outlined"
-                  label={t("unit.title", { ns: "custom" })}
+                  label={t("unit.title", { ns: "properties" })}
                   options={
                     units.isSuccess && units.currentData?.success
                       ? units.currentData.data!.map((unit) => ({
@@ -170,4 +185,4 @@ const AddExerciseModal = (props: IModalProps) => {
   );
 };
 
-export default AddExerciseModal;
+export default EditExerciseModal;

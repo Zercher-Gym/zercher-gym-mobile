@@ -1,11 +1,12 @@
-import { useDeleteCustomExerciseMutation } from "@/store/slices/apiSlice";
-import { setMessage } from "@/store/slices/messageSlice";
 import { useTranslation } from "react-i18next";
 import { Button, Dialog, Text } from "react-native-paper";
 import { useDispatch } from "react-redux";
-import { IModalProps } from "../types/modal-props";
 
-interface IDeleteExerciseModalProps extends IModalProps {
+import { useDeleteCustomExerciseMutation } from "@/store/slices/apiSlice";
+import { setMessage } from "@/store/slices/messageSlice";
+import { IModalPropsSuccess } from "../types/modal-props";
+
+interface IDeleteExerciseModalProps extends IModalPropsSuccess {
   customExerciseId: string | null;
 }
 

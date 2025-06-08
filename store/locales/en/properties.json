@@ -10,5 +10,8 @@
   "unit": {
     "title": "Unit",
     "requiredError": "Please select a unit!"
+  },
+  "quantity": {
+    "requiredError": "Please enter a quantity!"
   }
 }

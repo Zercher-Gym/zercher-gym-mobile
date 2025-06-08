@@ -560,9 +560,27 @@
           },
           {
             "in": "query",
-            "name": "searchAdminDTO",
-            "required": true,
-            "schema": { "$ref": "#/components/schemas/ExerciseSearchAdminDTO" }
+            "name": "identifier",
+            "required": false,
+            "schema": { "type": "string", "maxLength": 100, "minLength": 0 }
+          },
+          {
+            "in": "query",
+            "name": "language",
+            "required": false,
+            "schema": { "type": "string", "enum": ["ro", "en"] }
+          },
+          {
+            "in": "query",
+            "name": "title",
+            "required": false,
+            "schema": { "type": "string", "maxLength": 100, "minLength": 0 }
+          },
+          {
+            "in": "query",
+            "name": "description",
+            "required": false,
+            "schema": { "type": "string", "maxLength": 255, "minLength": 0 }
           }
         ],
         "responses": {
@@ -1087,9 +1105,15 @@
         "parameters": [
           {
             "in": "query",
-            "name": "searchDTO",
+            "name": "contains",
+            "required": false,
+            "schema": { "type": "string", "maxLength": 100, "minLength": 0 }
+          },
+          {
+            "in": "query",
+            "name": "limit",
             "required": true,
-            "schema": { "$ref": "#/components/schemas/ExerciseSearchDTO" }
+            "schema": { "type": "integer", "format": "int32" }
           }
         ],
         "responses": {
@@ -3088,6 +3112,13 @@
       "CustomWorkoutCreateUpdateDTO": {
         "type": "object",
         "properties": {
+          "customExercises": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomWorkoutCustomExerciseCreateUpdateDTO"
+            },
+            "uniqueItems": true
+          },
           "description": { "type": "string", "maxLength": 255, "minLength": 0 },
           "exercises": {
             "type": "array",
@@ -3097,7 +3128,17 @@
             "uniqueItems": true
           },
           "title": { "type": "string", "maxLength": 100, "minLength": 0 }
-        }
+        },
+        "required": ["customExercises", "exercises"]
+      },
+      "CustomWorkoutCustomExerciseCreateUpdateDTO": {
+        "type": "object",
+        "properties": {
+          "customExerciseId": { "type": "string", "format": "uuid" },
+          "quantity": { "type": "integer", "format": "int32" },
+          "unitId": { "type": "integer", "format": "int64" }
+        },
+        "required": ["customExerciseId", "quantity", "unitId"]
       },
       "CustomWorkoutCustomExerciseViewDTO": {
         "type": "object",
@@ -3114,12 +3155,33 @@
       "CustomWorkoutExerciseCreateUpdateDTO": {
         "type": "object",
         "properties": {
-          "customExerciseId": { "type": "string", "format": "uuid" },
           "exerciseId": { "type": "string", "format": "uuid" },
           "quantity": { "type": "integer", "format": "int32" },
           "unitId": { "type": "integer", "format": "int64" }
         },
-        "required": ["quantity", "unitId"]
+        "required": ["exerciseId", "quantity", "unitId"]
+      },
+      "CustomWorkoutExerciseViewDTO": {
+        "type": "object",
+        "properties": {
+          "exerciseId": { "type": "string", "format": "uuid" },
+          "id": { "type": "integer", "format": "int64" },
+          "identifier": { "type": "string", "maxLength": 100, "minLength": 0 },
+          "labels": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ExerciseLabelViewDTO"
+            }
+          },
+          "quantity": { "type": "integer", "format": "int32" },
+          "unit": { "$ref": "#/components/schemas/UnitViewDTO" },
+          "units": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/UnitViewDTO" },
+            "uniqueItems": true
+          }
+        },
+        "required": ["exerciseId", "id", "labels", "quantity", "unit", "units"]
       },
       "CustomWorkoutViewDTO": {
         "type": "object",
@@ -3134,7 +3196,9 @@
           "description": { "type": "string", "maxLength": 255, "minLength": 0 },
           "exercises": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/WorkoutExerciseViewDTO" },
+            "items": {
+              "$ref": "#/components/schemas/CustomWorkoutExerciseViewDTO"
+            },
             "uniqueItems": true
           },
           "title": { "type": "string", "maxLength": 100, "minLength": 0 }
@@ -3200,23 +3264,6 @@
           "title": { "type": "string", "minLength": 1 }
         }
       },
-      "ExerciseSearchAdminDTO": {
-        "type": "object",
-        "properties": {
-          "description": { "type": "string", "maxLength": 255, "minLength": 0 },
-          "identifier": { "type": "string", "maxLength": 100, "minLength": 0 },
-          "language": { "type": "string", "enum": ["ro", "en"] },
-          "title": { "type": "string", "maxLength": 100, "minLength": 0 }
-        }
-      },
-      "ExerciseSearchDTO": {
-        "type": "object",
-        "properties": {
-          "contains": { "type": "string", "maxLength": 100, "minLength": 0 },
-          "limit": { "type": "integer", "format": "int32" }
-        },
-        "required": ["limit"]
-      },
       "ExerciseUpdateDTO": {
         "type": "object",
         "properties": {
@@ -3252,6 +3299,7 @@
       "ExerciseViewDTO": {
         "type": "object",
         "properties": {
+          "id": { "type": "string", "format": "uuid" },
           "identifier": { "type": "string", "maxLength": 100, "minLength": 0 },
           "labels": {
             "type": "object",
@@ -3265,7 +3313,7 @@
             "uniqueItems": true
           }
         },
-        "required": ["labels", "units"]
+        "required": ["id", "labels", "units"]
       },
       "PageResponseExerciseViewAdminDTO": {
         "type": "object",

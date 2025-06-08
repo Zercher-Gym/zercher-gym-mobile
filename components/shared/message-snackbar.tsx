@@ -22,9 +22,11 @@ const MessageSnackbar = () => {
         if (payload.data !== null && payload.data !== undefined) {
           setDisplayMessage(t(payload.data.error!, { ns: "error" }));
         } else {
+          console.log(payload);
           setDisplayMessage(t("unknownError", { ns: "error" }));
         }
       } else {
+        console.log(message);
         setDisplayMessage(t("unknownError", { ns: "error" }));
       }
       dispatch(setMessage({ data: null, type: null }));

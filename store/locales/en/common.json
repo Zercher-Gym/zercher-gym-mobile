@@ -28,9 +28,14 @@
     "delete": "Delete exercise",
     "deleteConfirmation": "Are you sure you want to delete this exercise?"
   },
+  "exercise": {
+    "title": "Exercises",
+    "search": "Search exercise"
+  },
   "customWorkout": {
     "title": "Your workouts",
     "add": "Add workout",
+    "edit": "Edit workout",
     "delete": "Delete workout",
     "deleteConfirmation": "Are you sure you want to delete this workout?"
   }

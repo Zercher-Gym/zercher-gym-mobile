@@ -1,30 +1,33 @@
-import AddExerciseModal from "@/components/custom/add-exercise-modal";
-import DeleteExerciseModal from "@/components/custom/delete-exercise-modal";
-import EditExerciseModal from "@/components/custom/edit-exercise-modal";
-import {
-    CustomExerciseViewDto,
-    useGetCustomExercisesQuery,
-    useGetCustomWorkoutsQuery,
-} from "@/store/slices/apiSlice";
-import { useState } from "react";
+import AddExerciseModal from "@/components/exercise/add-exercise-modal";
+import DeleteExerciseModal from "@/components/exercise/delete-exercise-modal";
+import EditExerciseModal from "@/components/exercise/edit-exercise-modal";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView, StyleSheet, View } from "react-native";
-import {
-    IconButton,
-    List,
-    Portal,
-    ProgressBar,
-    Surface,
-    Text,
-} from "react-native-paper";
+import { IconButton, List, Portal, Surface, Text } from "react-native-paper";
 
-const CustomPage = () => {
+import LinearProgressBar from "@/components/shared/progress-bar";
+import { globalStyles } from "@/components/styles/global";
+import DeleteWorkoutModal from "@/components/workout/delete-workout-modal";
+import {
+  CustomExerciseViewDto,
+  useGetCustomExercisesQuery,
+  useGetCustomWorkoutsQuery,
+} from "@/store/slices/apiSlice";
+import { useRouter } from "expo-router";
+
+const CustomWorkoutListPage = () => {
   const { t } = useTranslation();
+  const router = useRouter();
 
   const [isAddExerciseModalVisible, setIsAddExerciseModalVisible] =
     useState(false);
 
   const [deleteExerciseModalId, setDeleteExerciseModalId] = useState<
+    null | string
+  >(null);
+
+  const [deleteWorkoutModalId, setDeleteWorkoutModalId] = useState<
     null | string
   >(null);
 
@@ -34,37 +37,28 @@ const CustomPage = () => {
   const customExercises = useGetCustomExercisesQuery(undefined, {
     refetchOnMountOrArgChange: true,
     refetchOnReconnect: true,
+    pollingInterval: 30000,
+    skipPollingIfUnfocused: true,
   });
 
   const customWorkouts = useGetCustomWorkoutsQuery(undefined, {
     refetchOnMountOrArgChange: true,
     refetchOnReconnect: true,
+    pollingInterval: 30000,
+    skipPollingIfUnfocused: true,
   });
 
   const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      padding: 30,
-    },
     section: {
       marginBottom: 10,
-    },
-    loadingBar: {
-      marginVertical: 30,
-    },
-    header: {
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
     },
   });
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <Surface style={styles.container} elevation={4}>
+      <Surface style={globalStyles.container} elevation={4}>
         <View style={styles.section}>
-          <View style={styles.header}>
+          <View style={globalStyles.header}>
             <Text variant="headlineLarge">{t("customExercise.title")}</Text>
             <IconButton
               icon="plus"
@@ -99,13 +93,16 @@ const CustomPage = () => {
               );
             })
           ) : (
-            <ProgressBar indeterminate={true} style={styles.loadingBar} />
+            <LinearProgressBar />
           )}
         </View>
         <View style={styles.section}>
-          <View style={styles.header}>
+          <View style={globalStyles.header}>
             <Text variant="headlineLarge">{t("customWorkout.title")}</Text>
-            <IconButton icon="plus"></IconButton>
+            <IconButton
+              icon="plus"
+              onPress={() => router.navigate("/workout/add")}
+            />
           </View>
 
           {customWorkouts.isSuccess &&
@@ -119,15 +116,25 @@ const CustomPage = () => {
                   description={value.description}
                   right={(props) => (
                     <>
-                      <List.Icon {...props} icon="pen" />
-                      <List.Icon {...props} icon="delete" />
+                      <IconButton
+                        {...props}
+                        icon="pen"
+                        onPress={() =>
+                          router.navigate(`/workout/edit/${value.id}`)
+                        }
+                      />
+                      <IconButton
+                        {...props}
+                        icon="delete"
+                        onPress={() => setDeleteWorkoutModalId(value.id)}
+                      />
                     </>
                   )}
                 />
               );
             })
           ) : (
-            <ProgressBar indeterminate={true} style={styles.loadingBar} />
+            <LinearProgressBar />
           )}
         </View>
       </Surface>
@@ -149,9 +156,15 @@ const CustomPage = () => {
           onSuccess={() => customExercises.refetch()}
           customExercise={editExerciseModalValue}
         />
+        <DeleteWorkoutModal
+          visible={deleteWorkoutModalId !== null}
+          hideModal={() => setDeleteWorkoutModalId(null)}
+          onSuccess={() => customWorkouts.refetch()}
+          customWorkoutId={deleteWorkoutModalId}
+        />
       </Portal>
     </ScrollView>
   );
 };
 
-export default CustomPage;
+export default CustomWorkoutListPage;

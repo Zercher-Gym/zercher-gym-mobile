@@ -91,7 +91,10 @@ const injectedRtkApi = api.injectEndpoints({
           page: queryArg.page,
           size: queryArg.size,
           sort: queryArg.sort,
-          searchAdminDTO: queryArg.searchAdminDto,
+          identifier: queryArg.identifier,
+          language: queryArg.language,
+          title: queryArg.title,
+          description: queryArg.description,
         },
       }),
     }),
@@ -173,7 +176,8 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/exercise/search`,
         params: {
-          searchDTO: queryArg.searchDto,
+          contains: queryArg.contains,
+          limit: queryArg.limit,
         },
       }),
     }),
@@ -467,7 +471,10 @@ export type SearchExerciseAdminApiArg = {
   size?: number;
   /** Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
   sort?: string[];
-  searchAdminDto: ExerciseSearchAdminDto;
+  identifier?: string;
+  language?: "ro" | "en";
+  title?: string;
+  description?: string;
 };
 export type DeleteExerciseApiResponse = /** status 200 OK */ BaseResponseVoid;
 export type DeleteExerciseApiArg = {
@@ -510,7 +517,8 @@ export type UpdateCustomExerciseApiArg = {
 export type SearchExerciseApiResponse =
   /** status 200 OK */ BaseResponseListExerciseViewDto;
 export type SearchExerciseApiArg = {
-  searchDto: ExerciseSearchDto;
+  contains?: string;
+  limit: number;
 };
 export type GetExerciseApiResponse =
   /** status 200 OK */ BaseResponseExerciseViewAdminDto;
@@ -729,12 +737,6 @@ export type PageResponseExerciseViewAdminDto = {
   success?: boolean;
   totalElements?: number;
 };
-export type ExerciseSearchAdminDto = {
-  description?: string;
-  identifier?: string;
-  language?: "ro" | "en";
-  title?: string;
-};
 export type ExerciseUpdateDto = {
   identifier?: string;
   units: number[];
@@ -765,6 +767,7 @@ export type ExerciseLabelViewDto = {
   title?: string;
 };
 export type ExerciseViewDto = {
+  id: string;
   identifier?: string;
   labels: {
     [key: string]: ExerciseLabelViewDto;
@@ -775,10 +778,6 @@ export type BaseResponseListExerciseViewDto = {
   data?: ExerciseViewDto[];
   error?: string;
   success?: boolean;
-};
-export type ExerciseSearchDto = {
-  contains?: string;
-  limit: number;
 };
 export type BaseResponseExerciseViewAdminDto = {
   data?: ExerciseViewAdminDto;
@@ -928,7 +927,7 @@ export type CustomWorkoutCustomExerciseViewDto = {
   title?: string;
   unit: UnitViewDto;
 };
-export type WorkoutExerciseViewDto = {
+export type CustomWorkoutExerciseViewDto = {
   exerciseId: string;
   id: number;
   identifier?: string;
@@ -937,11 +936,12 @@ export type WorkoutExerciseViewDto = {
   };
   quantity: number;
   unit: UnitViewDto;
+  units: UnitViewDto[];
 };
 export type CustomWorkoutViewDto = {
   customExercises: CustomWorkoutCustomExerciseViewDto[];
   description?: string;
-  exercises: WorkoutExerciseViewDto[];
+  exercises: CustomWorkoutExerciseViewDto[];
   title?: string;
 };
 export type BaseResponseCustomWorkoutViewDto = {
@@ -949,15 +949,20 @@ export type BaseResponseCustomWorkoutViewDto = {
   error?: string;
   success?: boolean;
 };
+export type CustomWorkoutCustomExerciseCreateUpdateDto = {
+  customExerciseId: string;
+  quantity: number;
+  unitId: number;
+};
 export type CustomWorkoutExerciseCreateUpdateDto = {
-  customExerciseId?: string;
-  exerciseId?: string;
+  exerciseId: string;
   quantity: number;
   unitId: number;
 };
 export type CustomWorkoutCreateUpdateDto = {
+  customExercises: CustomWorkoutCustomExerciseCreateUpdateDto[];
   description?: string;
-  exercises?: CustomWorkoutExerciseCreateUpdateDto[];
+  exercises: CustomWorkoutExerciseCreateUpdateDto[];
   title?: string;
 };
 export type BaseResponseListWorkoutViewListDto = {
@@ -968,6 +973,16 @@ export type BaseResponseListWorkoutViewListDto = {
 export type WorkoutSearchDto = {
   contains?: string;
   limit: number;
+};
+export type WorkoutExerciseViewDto = {
+  exerciseId: string;
+  id: number;
+  identifier?: string;
+  labels: {
+    [key: string]: ExerciseLabelViewDto;
+  };
+  quantity: number;
+  unit: UnitViewDto;
 };
 export type WorkoutViewDto = {
   exercises: WorkoutExerciseViewDto[];
@@ -992,43 +1007,61 @@ export const {
   useCreateExerciseMutation,
   useUpdateLabel1Mutation,
   useSearchExerciseAdminQuery,
+  useLazySearchExerciseAdminQuery,
   useDeleteExerciseMutation,
   useUpdateExerciseMutation,
   useGetCustomExercisesQuery,
+  useLazyGetCustomExercisesQuery,
   useDeleteCustomExerciseAdminMutation,
   useGetCustomExercisesAdminQuery,
+  useLazyGetCustomExercisesAdminQuery,
   useCreateCustomExerciseMutation,
   useDeleteCustomExerciseMutation,
   useUpdateCustomExerciseMutation,
   useSearchExerciseQuery,
+  useLazySearchExerciseQuery,
   useGetExerciseQuery,
+  useLazyGetExerciseQuery,
   useGetRoleLimitQuery,
+  useLazyGetRoleLimitQuery,
   useUpdateRoleLimitMutation,
   useGetUnitsQuery,
+  useLazyGetUnitsQuery,
   useCreateUnitMutation,
   useDeleteUnitMutation,
   useUpdateUnitMutation,
   useSearchAdminQuery,
+  useLazySearchAdminQuery,
   useDeleteProfileMutation,
   useUpdateUserAdminMutation,
   useDeleteProfileCurrentMutation,
   useGetProfileCurrentQuery,
+  useLazyGetProfileCurrentQuery,
   useUpdateProfileMutation,
   useGetProfileQuery,
+  useLazyGetProfileQuery,
   useSearchQuery,
+  useLazySearchQuery,
   useCreateWorkoutMutation,
   useUpdateLabelMutation,
   useSearchWorkoutAdminQuery,
+  useLazySearchWorkoutAdminQuery,
   useDeleteWorkoutMutation,
   useUpdateWorkoutMutation,
   useGetCustomWorkoutsQuery,
+  useLazyGetCustomWorkoutsQuery,
   useDeleteCustomWorkoutAdminMutation,
   useGetCustomWorkoutAdminQuery,
+  useLazyGetCustomWorkoutAdminQuery,
   useGetCustomWorkoutsByAdminQuery,
+  useLazyGetCustomWorkoutsByAdminQuery,
   useCreateCustomWorkoutMutation,
   useDeleteCustomWorkoutMutation,
   useGetCustomWorkoutQuery,
+  useLazyGetCustomWorkoutQuery,
   useUpdateCustomWorkoutMutation,
   useSearchWorkoutQuery,
+  useLazySearchWorkoutQuery,
   useGetWorkoutQuery,
+  useLazyGetWorkoutQuery,
 } = injectedRtkApi;

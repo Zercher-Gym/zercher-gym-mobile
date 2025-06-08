@@ -5,7 +5,8 @@
     "delete": "Șterge",
     "edit": "Editează",
     "back": "Înapoi",
-    "create": "Creează"
+    "create": "Creează",
+    "workout": "Antrenament"
   },
   "language": {
     "title": "Limbă",
@@ -28,9 +29,14 @@
     "delete": "Șterge exercițiu",
     "deleteConfirmation": "Ești sigur că dorești să ștergi acest exercițiu?"
   },
+  "exercise": {
+    "title": "Exerciții",
+    "search": "Caută exercițiu"
+  },
   "customWorkout": {
     "title": "Antrenamentele tale",
     "add": "Adaugă antrenament",
+    "edit": "Editează antrenament",
     "delete": "Șterge antrenament",
     "deleteConfirmation": "Ești sigur că dorești să ștergi acest antrenament?"
   }

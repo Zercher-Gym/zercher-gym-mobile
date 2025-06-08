@@ -10,5 +10,8 @@
   "unit": {
     "title": "Unitate",
     "requiredError": "Vă rugăm să selectați o unitate!"
+  },
+  "quantity": {
+    "requiredError": "Vă rugăm să introduceți o cantitate!"
   }
 }
