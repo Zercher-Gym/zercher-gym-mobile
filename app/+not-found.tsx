@@ -15,7 +15,6 @@ export default function NotFoundScreen() {
       padding: 30,
     },
     card: {
-      width: "50%",
       maxWidth: 500,
       minWidth: 250,
       alignItems: "center",
@@ -43,7 +42,7 @@ export default function NotFoundScreen() {
             <Text variant="bodyMedium">{t("notFound.description")}</Text>
           </Card.Content>
           <Card.Actions>
-            <Link href="/profile" asChild>
+            <Link href="/profile/view" asChild>
               <Button mode="contained">{t("notFound.button")}</Button>
             </Link>
           </Card.Actions>

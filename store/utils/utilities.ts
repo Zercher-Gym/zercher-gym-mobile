@@ -26,5 +26,14 @@ const formatDate = (locale: string, dateString: string | undefined | null) => {
   return date.substring(0, 10);
 };
 
-export { emailRegex, formatDate, formatDateTime, strongPasswordRegex };
+const capitalize = (str: string) => {
+  return str[0].toUpperCase() + str.slice(1);
+};
+
+export {
+  capitalize, emailRegex,
+  formatDate,
+  formatDateTime,
+  strongPasswordRegex
+};
 

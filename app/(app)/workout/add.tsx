@@ -233,7 +233,7 @@ const CustomWorkoutAddPage = (props: IAddWorkoutPageProps) => {
               <Text variant="headlineLarge">
                 {props.customWorkoutId
                   ? t("application.edit")
-                  : t("application.add")}
+                  : t("application.create")}
               </Text>
               <IconButton
                 icon="content-save"

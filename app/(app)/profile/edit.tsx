@@ -4,20 +4,20 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Keyboard, StyleSheet, View } from "react-native";
 import {
-  Button,
-  Card,
-  Surface,
-  Text,
-  TextInput,
-  useTheme,
+    Button,
+    Card,
+    Surface,
+    Text,
+    TextInput,
+    useTheme,
 } from "react-native-paper";
 import { useDispatch } from "react-redux";
 
 import DismissKeyboard from "@/components/shared/dismiss-keyboard";
 import {
-  useGetProfileCurrentQuery,
-  UserUpdateDto,
-  useUpdateProfileMutation,
+    useGetProfileCurrentQuery,
+    UserUpdateDto,
+    useUpdateProfileMutation,
 } from "@/store/slices/apiSlice";
 import { setMessage } from "@/store/slices/messageSlice";
 import { emailRegex } from "@/store/utils/utilities";
@@ -63,7 +63,7 @@ export default function ProfileEditPage() {
         userUpdateDto: data,
       }).unwrap();
 
-      router.replace("/profile");
+      router.replace("/profile/view");
     } catch (err) {
       const error = err as any;
       dispatch(setMessage({ data: error, type: "payload" }));

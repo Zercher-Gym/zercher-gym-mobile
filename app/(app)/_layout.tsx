@@ -50,11 +50,27 @@ export default function AppLayout() {
           options={{ title: t("application.workout") }}
         />
         <Stack.Screen
-          name="profile"
+          name="profile/view"
           options={{ title: t("application.title") }}
         />
         <Stack.Screen
-          name="profile-edit"
+          name="profile/edit"
+          options={{ title: t("application.title") }}
+        />
+        <Stack.Screen
+          name="history/list"
+          options={{ title: t("application.title") }}
+        />
+        <Stack.Screen
+          name="log/add"
+          options={{ title: t("application.title") }}
+        />
+        <Stack.Screen
+          name="history/add/workout/[id]"
+          options={{ title: t("application.title") }}
+        />
+        <Stack.Screen
+          name="history/custom/add/workout/[id]"
           options={{ title: t("application.title") }}
         />
       </Stack>
@@ -75,9 +91,19 @@ export default function AppLayout() {
           onPress={() => redirectToPage("/workout/list")}
         />
         <Appbar.Action
+          icon="calendar"
+          size={36}
+          onPress={() => redirectToPage("/history/list")}
+        />
+        <Appbar.Action
+          icon="plus"
+          size={36}
+          onPress={() => redirectToPage("/log/add")}
+        />
+        <Appbar.Action
           icon="account"
           size={36}
-          onPress={() => redirectToPage("/profile")}
+          onPress={() => redirectToPage("/profile/view")}
         />
       </Appbar>
     </>
