@@ -12,6 +12,7 @@ import { persistor, store } from "@/store/store";
 
 import MessageSnackbar from "@/components/shared/message-snackbar";
 import StackHeader from "@/components/shared/stack-header";
+import { Colors } from "@/components/styles/colors";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -19,7 +20,13 @@ function ThemeProvider({ children }: Readonly<PropsWithChildren>) {
   const themeMode = useSelector(selectThemeMode);
 
   return (
-    <PaperProvider theme={themeMode === "light" ? MD3LightTheme : MD3DarkTheme}>
+    <PaperProvider
+      theme={
+        themeMode === "light"
+          ? { ...MD3LightTheme, colors: Colors.light }
+          : { ...MD3DarkTheme, colors: Colors.dark }
+      }
+    >
       {children}
     </PaperProvider>
   );
@@ -55,6 +62,10 @@ export default function RootLayout() {
           >
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
             <Stack.Screen name="(app)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="+not-found"
+              options={{ headerShown: false }}
+            />
           </Stack>
           <MessageSnackbar />
         </ThemeProvider>

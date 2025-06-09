@@ -184,6 +184,38 @@ const injectedRtkApi = api.injectEndpoints({
     getExercise: build.query<GetExerciseApiResponse, GetExerciseApiArg>({
       query: (queryArg) => ({ url: `/api/exercise/${queryArg.id}` }),
     }),
+    createWorkoutLog: build.mutation<
+      CreateWorkoutLogApiResponse,
+      CreateWorkoutLogApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/log/create`,
+        method: "POST",
+        body: queryArg.workoutLogCreateDto,
+      }),
+    }),
+    getWorkoutLogList: build.query<
+      GetWorkoutLogListApiResponse,
+      GetWorkoutLogListApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/log/list`,
+        params: {
+          page: queryArg.page,
+          size: queryArg.size,
+          sort: queryArg.sort,
+        },
+      }),
+    }),
+    deleteWorkoutLog: build.mutation<
+      DeleteWorkoutLogApiResponse,
+      DeleteWorkoutLogApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/log/${queryArg.id}`,
+        method: "DELETE",
+      }),
+    }),
     getRoleLimit: build.query<GetRoleLimitApiResponse, GetRoleLimitApiArg>({
       query: () => ({ url: `/api/role/admin/limit` }),
     }),
@@ -410,7 +442,8 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/api/workout/search`,
         params: {
-          searchDTO: queryArg.searchDto,
+          contains: queryArg.contains,
+          limit: queryArg.limit,
         },
       }),
     }),
@@ -523,6 +556,24 @@ export type SearchExerciseApiArg = {
 export type GetExerciseApiResponse =
   /** status 200 OK */ BaseResponseExerciseViewAdminDto;
 export type GetExerciseApiArg = {
+  id: string;
+};
+export type CreateWorkoutLogApiResponse = /** status 200 OK */ BaseResponseVoid;
+export type CreateWorkoutLogApiArg = {
+  workoutLogCreateDto: WorkoutLogCreateDto;
+};
+export type GetWorkoutLogListApiResponse =
+  /** status 200 OK */ PageResponseWorkoutLogViewListDto;
+export type GetWorkoutLogListApiArg = {
+  /** Zero-based page index (0..N) */
+  page?: number;
+  /** The size of the page to be returned */
+  size?: number;
+  /** Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+  sort?: string[];
+};
+export type DeleteWorkoutLogApiResponse = /** status 200 OK */ BaseResponseVoid;
+export type DeleteWorkoutLogApiArg = {
   id: string;
 };
 export type GetRoleLimitApiResponse = /** status 200 OK */ RoleLimitViewDto[];
@@ -666,7 +717,8 @@ export type UpdateCustomWorkoutApiArg = {
 export type SearchWorkoutApiResponse =
   /** status 200 OK */ BaseResponseListWorkoutViewListDto;
 export type SearchWorkoutApiArg = {
-  searchDto: WorkoutSearchDto;
+  contains?: string;
+  limit: number;
 };
 export type GetWorkoutApiResponse =
   /** status 200 OK */ BaseResponseWorkoutViewDto;
@@ -784,6 +836,38 @@ export type BaseResponseExerciseViewAdminDto = {
   error?: string;
   success?: boolean;
 };
+export type ExerciseLogCreateDto = {
+  detailsList: string[];
+  workoutExerciseId: number;
+};
+export type WorkoutLogCreateDto = {
+  customExercises?: ExerciseLogCreateDto[];
+  customWorkoutId?: string;
+  details?: string;
+  exercises?: ExerciseLogCreateDto[];
+  workoutId?: string;
+};
+export type WorkoutLabelViewDto = {
+  description?: string;
+  title?: string;
+};
+export type WorkoutLogViewListDto = {
+  createdAt: string;
+  description?: string;
+  id: string;
+  labels?: {
+    [key: string]: WorkoutLabelViewDto;
+  };
+  title?: string;
+};
+export type PageResponseWorkoutLogViewListDto = {
+  data?: WorkoutLogViewListDto[];
+  error?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  success?: boolean;
+  totalElements?: number;
+};
 export type RoleLimitViewDto = {
   exerciseLimit?: number;
   id: number;
@@ -880,10 +964,6 @@ export type WorkoutLabelUpdateDto = {
   description?: string;
   title?: string;
 };
-export type WorkoutLabelViewDto = {
-  description?: string;
-  title?: string;
-};
 export type WorkoutViewListDto = {
   id: string;
   identifier?: string;
@@ -970,10 +1050,6 @@ export type BaseResponseListWorkoutViewListDto = {
   error?: string;
   success?: boolean;
 };
-export type WorkoutSearchDto = {
-  contains?: string;
-  limit: number;
-};
 export type WorkoutExerciseViewDto = {
   exerciseId: string;
   id: number;
@@ -1022,6 +1098,10 @@ export const {
   useLazySearchExerciseQuery,
   useGetExerciseQuery,
   useLazyGetExerciseQuery,
+  useCreateWorkoutLogMutation,
+  useGetWorkoutLogListQuery,
+  useLazyGetWorkoutLogListQuery,
+  useDeleteWorkoutLogMutation,
   useGetRoleLimitQuery,
   useLazyGetRoleLimitQuery,
   useUpdateRoleLimitMutation,

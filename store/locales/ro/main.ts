@@ -7,5 +7,5 @@ export default {
   common: common,
   authentication: authentication,
   error: error,
-  custom: properties,
+  properties: properties,
 };

@@ -9,14 +9,13 @@ import { useTranslation } from "react-i18next";
 import { ScrollView, StyleSheet } from "react-native";
 import {
   Button,
-  Card,
   Dialog,
   IconButton,
   List,
   Portal,
   Surface,
   Switch,
-  Text
+  Text,
 } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -27,7 +26,7 @@ import { setMessage } from "@/store/slices/messageSlice";
 import { selectThemeMode, toggleThemeMode } from "@/store/slices/themeSlice";
 import { formatDate } from "@/store/utils/utilities";
 
-export default function Profile() {
+export default function ProfileViewPage() {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const router = useRouter();
@@ -40,7 +39,7 @@ export default function Profile() {
   });
 
   const [resetSent, setResetSent] = useState(false);
-  const [resetPasswordSend, resetPasswordSendInformation] =
+  const [resetPasswordSend] =
     useResetPasswordSendMutation();
 
   const [deleteConfirmationVisible, setDeleteConfirmationVisible] =
@@ -107,13 +106,13 @@ export default function Profile() {
   };
 
   const goToProfileEdit = () => {
-    router.navigate("/profile-edit");
+    router.navigate("/profile/edit");
   };
 
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      padding: 20,
+      padding: 30,
     },
     title: {
       marginTop: 20,
@@ -135,104 +134,100 @@ export default function Profile() {
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <Surface style={styles.container} elevation={4}>
-        <Card style={styles.card}>
-          <Card.Title
-            title={t("profile.title", { ns: "authentication" })}
-            titleStyle={styles.title}
-            titleVariant="displayMedium"
-          />
-          {isSuccess && currentData !== undefined ? (
-            <Card.Content>
-              <List.Section>
-                <List.Subheader>
-                  {t("profile.userData", { ns: "authentication" })}
-                </List.Subheader>
-                <List.Item
-                  title={t("username.title", { ns: "authentication" })}
-                  description={currentData.data?.username}
-                  left={(props) => <List.Icon {...props} icon="account" />}
-                />
-                <List.Item
-                  title={t("email.title", { ns: "authentication" })}
-                  description={currentData.data?.email}
-                  left={(props) => <List.Icon {...props} icon="email" />}
-                />
-                <List.Item
-                  title={t("profile.memberSince", { ns: "authentication" })}
-                  description={formatDate(
-                    i18n.language,
-                    currentData.data?.createdAt
-                  )}
-                  left={(props) => <List.Icon {...props} icon="calendar" />}
-                />
-              </List.Section>
-              <List.Section>
-                <List.Subheader>
-                  {t("profile.settings", { ns: "authentication" })}
-                </List.Subheader>
-                <List.Item
-                  title={t("theme.title")}
-                  description={t(`theme.${themeMode}`)}
-                  right={(props) => (
-                    <Switch
-                      {...props}
-                      value={themeMode === "light"}
-                      onValueChange={onToggleTheme}
-                    />
-                  )}
-                />
-                <List.Item
-                  title={t("language.title")}
-                  right={(props) => <LanguageSelector />}
-                />
-              </List.Section>
-              <List.Section>
-                <List.Subheader>
-                  {t("profile.actions", { ns: "authentication" })}
-                </List.Subheader>
-                <List.Item
-                  title={t("signout", { ns: "authentication" })}
-                  right={(props) => (
-                    <IconButton {...props} icon="logout" onPress={signOut} />
-                  )}
-                />
-                <List.Item
-                  title={t("resetPassword.title", { ns: "authentication" })}
-                  right={(props) => (
-                    <IconButton
-                      {...props}
-                      icon="lock-reset"
-                      onPress={sendResetPassword}
-                      disabled={resetSent}
-                    />
-                  )}
-                />
-                <List.Item
-                  title={t("editProfile.title", { ns: "authentication" })}
-                  right={(props) => (
-                    <IconButton
-                      {...props}
-                      icon="pencil"
-                      onPress={goToProfileEdit}
-                    />
-                  )}
-                />
-                <List.Item
-                  title={t("deleteProfile.title", { ns: "authentication" })}
-                  right={(props) => (
-                    <IconButton
-                      {...props}
-                      icon="account-off"
-                      onPress={showDeleteConfirmationModal}
-                    />
-                  )}
-                />
-              </List.Section>
-            </Card.Content>
-          ) : (
-            <LinearProgressBar />
-          )}
-        </Card>
+        <Text variant="headlineLarge">
+          {t("profile.title", { ns: "authentication" })}
+        </Text>
+        {isSuccess && currentData !== undefined ? (
+          <>
+            <List.Section>
+              <List.Subheader>
+                {t("profile.userData", { ns: "authentication" })}
+              </List.Subheader>
+              <List.Item
+                title={t("username.title", { ns: "authentication" })}
+                description={currentData.data?.username}
+                left={(props) => <List.Icon {...props} icon="account" />}
+              />
+              <List.Item
+                title={t("email.title", { ns: "authentication" })}
+                description={currentData.data?.email}
+                left={(props) => <List.Icon {...props} icon="email" />}
+              />
+              <List.Item
+                title={t("profile.memberSince", { ns: "authentication" })}
+                description={formatDate(
+                  i18n.language,
+                  currentData.data?.createdAt
+                )}
+                left={(props) => <List.Icon {...props} icon="calendar" />}
+              />
+            </List.Section>
+            <List.Section>
+              <List.Subheader>
+                {t("profile.settings", { ns: "authentication" })}
+              </List.Subheader>
+              <List.Item
+                title={t("theme.title")}
+                description={t(`theme.${themeMode}`)}
+                right={(props) => (
+                  <Switch
+                    {...props}
+                    value={themeMode === "light"}
+                    onValueChange={onToggleTheme}
+                  />
+                )}
+              />
+              <List.Item
+                title={t("language.title")}
+                right={(props) => <LanguageSelector />}
+              />
+            </List.Section>
+            <List.Section>
+              <List.Subheader>
+                {t("profile.actions", { ns: "authentication" })}
+              </List.Subheader>
+              <List.Item
+                title={t("signout", { ns: "authentication" })}
+                right={(props) => (
+                  <IconButton {...props} icon="logout" onPress={signOut} />
+                )}
+              />
+              <List.Item
+                title={t("resetPassword.title", { ns: "authentication" })}
+                right={(props) => (
+                  <IconButton
+                    {...props}
+                    icon="lock-reset"
+                    onPress={sendResetPassword}
+                    disabled={resetSent}
+                  />
+                )}
+              />
+              <List.Item
+                title={t("editProfile.title", { ns: "authentication" })}
+                right={(props) => (
+                  <IconButton
+                    {...props}
+                    icon="pencil"
+                    onPress={goToProfileEdit}
+                  />
+                )}
+              />
+              <List.Item
+                title={t("deleteProfile.title", { ns: "authentication" })}
+                right={(props) => (
+                  <IconButton
+                    {...props}
+                    icon="account-off"
+                    onPress={showDeleteConfirmationModal}
+                  />
+                )}
+              />
+            </List.Section>
+          </>
+        ) : (
+          <LinearProgressBar />
+        )}
       </Surface>
       <Portal>
         <Dialog

@@ -52,7 +52,7 @@ export default function SignInScreen() {
       else {
         dispatch(setMessage({ data: response.error!, type: "code" }));
       }
-      router.replace("/profile");
+      router.replace("/profile/view");
     } catch (err) {
       const error = err as any;
       dispatch(setMessage({ data: error, type: "payload" }));

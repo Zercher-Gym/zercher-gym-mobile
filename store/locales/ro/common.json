@@ -39,5 +39,15 @@
     "edit": "Editează antrenament",
     "delete": "Șterge antrenament",
     "deleteConfirmation": "Ești sigur că dorești să ștergi acest antrenament?"
+  },
+  "workout": {
+    "title": "Antrenament",
+    "search": "Caută antrenament"
+  },
+  "workoutLog": {
+    "history": "Istoric antrenamente",
+    "add": "Adaugă intrare",
+    "delete": "Șterge intrare",
+    "deleteConfirmation": "Ești sigur că dorești să ștergi această intrare?"
   }
 }

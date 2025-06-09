@@ -13,5 +13,9 @@
   },
   "quantity": {
     "requiredError": "Please enter a quantity!"
+  },
+  "details": {
+    "title": "Details",
+    "requiredError": "Please enter a value for this field!"
   }
 }

@@ -13,5 +13,9 @@
   },
   "quantity": {
     "requiredError": "Vă rugăm să introduceți o cantitate!"
+  },
+  "details": {
+    "title": "Detalii",
+    "requiredError": "Vă rugăm să introduceți o valoare pentru acest câmp!"
   }
 }

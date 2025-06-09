@@ -10,7 +10,7 @@ export default function AuthRoot() {
   const { t } = useTranslation();
 
   if (isSignedIn) {
-    return <Redirect href="/profile"></Redirect>;
+    return <Redirect href="/profile/view"></Redirect>;
   }
 
   return (
