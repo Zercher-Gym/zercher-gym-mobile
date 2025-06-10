@@ -62,15 +62,15 @@ export default function AppLayout() {
           options={{ title: t("application.title") }}
         />
         <Stack.Screen
-          name="log/add"
+          name="history/workout/add/[id]"
           options={{ title: t("application.title") }}
         />
         <Stack.Screen
-          name="history/add/workout/[id]"
+          name="history/workout/edit/[id]"
           options={{ title: t("application.title") }}
         />
         <Stack.Screen
-          name="history/custom/add/workout/[id]"
+          name="history/workout/custom/add/[id]"
           options={{ title: t("application.title") }}
         />
       </Stack>
@@ -94,11 +94,6 @@ export default function AppLayout() {
           icon="calendar"
           size={36}
           onPress={() => redirectToPage("/history/list")}
-        />
-        <Appbar.Action
-          icon="plus"
-          size={36}
-          onPress={() => redirectToPage("/log/add")}
         />
         <Appbar.Action
           icon="account"

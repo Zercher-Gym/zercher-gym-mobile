@@ -32,7 +32,7 @@ const HistoryListPage = () => {
 
   const fetchData = async () => {
     if (page >= 0) {
-      await getWorkoutLogList({ page: 0, size: 15 });
+      await getWorkoutLogList({ page: page, size: 20 });
     }
   };
 
@@ -47,11 +47,26 @@ const HistoryListPage = () => {
   });
 
   const onSelectWorkout = (workout: WorkoutViewListDto) => {
-    router.navigate(`/history/add/workout/${workout.id}`);
+    router.navigate(`/history/workout/add/${workout.id}`);
   };
 
   const selectCustomWorkout = (customWorkout: CustomWorkoutViewListDto) => {
-    router.navigate(`/history/custom/add/workout/${customWorkout.id}`);
+    router.navigate(`/history/workout/custom/add/${customWorkout.id}`);
+  };
+
+  const nextPage = () => {
+    if (
+      (page + 2) * workoutLogList.currentData!.pageSize! <=
+      workoutLogList.currentData!.totalElements!
+    ) {
+      setPage(page + 1);
+    }
+  };
+
+  const previousPage = () => {
+    if (page >= 0) {
+      setPage(page - 1);
+    }
   };
 
   return (
@@ -63,51 +78,75 @@ const HistoryListPage = () => {
             <IconButton
               icon="plus"
               onPress={() => setIsSearchWorkoutModalVisible(true)}
-            ></IconButton>
+            />
           </View>
-
           {workoutLogList.isSuccess &&
           workoutLogList.currentData &&
           workoutLogList.currentData.success ? (
-            workoutLogList.currentData.data!.map((value) => {
-              if (value.title !== null) {
-                return (
-                  <List.Item
-                    key={value.id}
-                    title={value.title}
-                    description={formatDateTime(i18n.language, value.createdAt)}
-                    right={(props) => (
-                      <>
-                        {/* <IconButton {...props} icon="pen" /> */}
-                        <IconButton
-                          {...props}
-                          icon="delete"
-                          onPress={() => setDeleteWorkoutModalId(value.id)}
-                        />
-                      </>
-                    )}
-                  />
-                );
-              } else if (value.labels && value.labels[i18n.language]) {
-                return (
-                  <List.Item
-                    key={value.id}
-                    title={value.labels[i18n.language].title}
-                    description={formatDateTime(i18n.language, value.createdAt)}
-                    right={(props) => (
-                      <>
-                        {/* <IconButton {...props} icon="pen" /> */}
-                        <IconButton
-                          {...props}
-                          icon="delete"
-                          onPress={() => setDeleteWorkoutModalId(value.id)}
-                        />
-                      </>
-                    )}
-                  />
-                );
-              }
-            })
+            <>
+              {workoutLogList.currentData.data!.map((value) => {
+                if (value.title !== null) {
+                  return (
+                    <List.Item
+                      key={value.id}
+                      title={value.title}
+                      description={formatDateTime(
+                        i18n.language,
+                        value.createdAt
+                      )}
+                      right={(props) => (
+                        <>
+                          <IconButton
+                            icon="eye"
+                            onPress={() =>
+                              router.navigate(
+                                `/history/workout/edit/${value.id}`
+                              )
+                            }
+                          />
+                          <IconButton
+                            icon="delete"
+                            onPress={() => setDeleteWorkoutModalId(value.id)}
+                          />
+                        </>
+                      )}
+                    />
+                  );
+                } else if (value.labels && value.labels[i18n.language]) {
+                  return (
+                    <List.Item
+                      key={value.id}
+                      title={value.labels[i18n.language].title}
+                      description={formatDateTime(
+                        i18n.language,
+                        value.createdAt
+                      )}
+                      right={(props) => (
+                        <>
+                          <IconButton
+                            icon="eye"
+                            onPress={() =>
+                              router.navigate(
+                                `/history/workout/edit/${value.id}`
+                              )
+                            }
+                          />
+                          <IconButton
+                            {...props}
+                            icon="delete"
+                            onPress={() => setDeleteWorkoutModalId(value.id)}
+                          />
+                        </>
+                      )}
+                    />
+                  );
+                }
+              })}
+              <View style={globalStyles.header}>
+                <IconButton icon="arrow-left" onPress={previousPage} />
+                <IconButton icon="arrow-right" onPress={nextPage} />
+              </View>
+            </>
           ) : (
             <LinearProgressBar />
           )}

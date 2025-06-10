@@ -1223,6 +1223,143 @@
         "tags": ["Exercise"]
       }
     },
+    "/api/log/admin/list/{userId}": {
+      "get": {
+        "operationId": "getWorkoutLogListAdmin",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          },
+          {
+            "description": "Zero-based page index (0..N)",
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": { "type": "integer", "default": 0, "minimum": 0 }
+          },
+          {
+            "description": "The size of the page to be returned",
+            "in": "query",
+            "name": "size",
+            "required": false,
+            "schema": { "type": "integer", "default": 20, "minimum": 1 }
+          },
+          {
+            "description": "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": { "type": "array", "items": { "type": "string" } }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageResponseWorkoutLogViewListDTO"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [{ "Authentication": [] }],
+        "tags": ["Log", "Admin"]
+      }
+    },
+    "/api/log/admin/{id}": {
+      "delete": {
+        "operationId": "deleteWorkoutLogAdmin",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [{ "Authentication": [] }],
+        "tags": ["Log", "Admin"]
+      }
+    },
     "/api/log/create": {
       "post": {
         "operationId": "createWorkoutLog",
@@ -1370,6 +1507,63 @@
             "content": {
               "*/*": {
                 "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/BaseResponseVoid" }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [{ "Authentication": [] }],
+        "tags": ["Log"]
+      },
+      "get": {
+        "operationId": "getWorkoutLog",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BaseResponseWorkoutLogViewDTO"
+                }
               }
             },
             "description": "OK"
@@ -3267,6 +3461,14 @@
           "success": { "type": "boolean" }
         }
       },
+      "BaseResponseWorkoutLogViewDTO": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/WorkoutLogViewDTO" },
+          "error": { "type": "string" },
+          "success": { "type": "boolean" }
+        }
+      },
       "BaseResponseWorkoutViewDTO": {
         "type": "object",
         "properties": {
@@ -3461,10 +3663,19 @@
       "ExerciseLogCreateDTO": {
         "type": "object",
         "properties": {
+          "customWorkoutExerciseId": { "type": "integer", "format": "int64" },
           "detailsList": { "type": "array", "items": { "type": "string" } },
           "workoutExerciseId": { "type": "integer", "format": "int64" }
         },
-        "required": ["detailsList", "workoutExerciseId"]
+        "required": ["detailsList"]
+      },
+      "ExerciseLogViewDTO": {
+        "type": "object",
+        "properties": {
+          "customWorkoutExerciseId": { "type": "integer", "format": "int64" },
+          "details": { "type": "string" },
+          "workoutExerciseId": { "type": "integer", "format": "int64" }
+        }
       },
       "ExerciseUpdateDTO": {
         "type": "object",
@@ -3790,10 +4001,6 @@
       "WorkoutLogCreateDTO": {
         "type": "object",
         "properties": {
-          "customExercises": {
-            "type": "array",
-            "items": { "$ref": "#/components/schemas/ExerciseLogCreateDTO" }
-          },
           "customWorkoutId": { "type": "string", "format": "uuid" },
           "details": { "type": "string" },
           "exercises": {
@@ -3802,6 +4009,29 @@
           },
           "workoutId": { "type": "string", "format": "uuid" }
         }
+      },
+      "WorkoutLogViewDTO": {
+        "type": "object",
+        "properties": {
+          "createdAt": { "type": "string", "format": "date-time" },
+          "customWorkoutId": { "type": "string", "format": "uuid" },
+          "description": { "type": "string" },
+          "exerciseLogs": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ExerciseLogViewDTO" },
+            "uniqueItems": true
+          },
+          "id": { "type": "string", "format": "uuid" },
+          "labels": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/WorkoutLabelViewDTO"
+            }
+          },
+          "title": { "type": "string" },
+          "workoutId": { "type": "string", "format": "uuid" }
+        },
+        "required": ["createdAt", "id"]
       },
       "WorkoutLogViewListDTO": {
         "type": "object",

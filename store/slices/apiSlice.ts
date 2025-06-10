@@ -184,6 +184,28 @@ const injectedRtkApi = api.injectEndpoints({
     getExercise: build.query<GetExerciseApiResponse, GetExerciseApiArg>({
       query: (queryArg) => ({ url: `/api/exercise/${queryArg.id}` }),
     }),
+    getWorkoutLogListAdmin: build.query<
+      GetWorkoutLogListAdminApiResponse,
+      GetWorkoutLogListAdminApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/log/admin/list/${queryArg.userId}`,
+        params: {
+          page: queryArg.page,
+          size: queryArg.size,
+          sort: queryArg.sort,
+        },
+      }),
+    }),
+    deleteWorkoutLogAdmin: build.mutation<
+      DeleteWorkoutLogAdminApiResponse,
+      DeleteWorkoutLogAdminApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/api/log/admin/${queryArg.id}`,
+        method: "DELETE",
+      }),
+    }),
     createWorkoutLog: build.mutation<
       CreateWorkoutLogApiResponse,
       CreateWorkoutLogApiArg
@@ -215,6 +237,9 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/api/log/${queryArg.id}`,
         method: "DELETE",
       }),
+    }),
+    getWorkoutLog: build.query<GetWorkoutLogApiResponse, GetWorkoutLogApiArg>({
+      query: (queryArg) => ({ url: `/api/log/${queryArg.id}` }),
     }),
     getRoleLimit: build.query<GetRoleLimitApiResponse, GetRoleLimitApiArg>({
       query: () => ({ url: `/api/role/admin/limit` }),
@@ -558,6 +583,22 @@ export type GetExerciseApiResponse =
 export type GetExerciseApiArg = {
   id: string;
 };
+export type GetWorkoutLogListAdminApiResponse =
+  /** status 200 OK */ PageResponseWorkoutLogViewListDto;
+export type GetWorkoutLogListAdminApiArg = {
+  userId: string;
+  /** Zero-based page index (0..N) */
+  page?: number;
+  /** The size of the page to be returned */
+  size?: number;
+  /** Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+  sort?: string[];
+};
+export type DeleteWorkoutLogAdminApiResponse =
+  /** status 200 OK */ BaseResponseVoid;
+export type DeleteWorkoutLogAdminApiArg = {
+  id: string;
+};
 export type CreateWorkoutLogApiResponse = /** status 200 OK */ BaseResponseVoid;
 export type CreateWorkoutLogApiArg = {
   workoutLogCreateDto: WorkoutLogCreateDto;
@@ -574,6 +615,11 @@ export type GetWorkoutLogListApiArg = {
 };
 export type DeleteWorkoutLogApiResponse = /** status 200 OK */ BaseResponseVoid;
 export type DeleteWorkoutLogApiArg = {
+  id: string;
+};
+export type GetWorkoutLogApiResponse =
+  /** status 200 OK */ BaseResponseWorkoutLogViewDto;
+export type GetWorkoutLogApiArg = {
   id: string;
 };
 export type GetRoleLimitApiResponse = /** status 200 OK */ RoleLimitViewDto[];
@@ -836,17 +882,6 @@ export type BaseResponseExerciseViewAdminDto = {
   error?: string;
   success?: boolean;
 };
-export type ExerciseLogCreateDto = {
-  detailsList: string[];
-  workoutExerciseId: number;
-};
-export type WorkoutLogCreateDto = {
-  customExercises?: ExerciseLogCreateDto[];
-  customWorkoutId?: string;
-  details?: string;
-  exercises?: ExerciseLogCreateDto[];
-  workoutId?: string;
-};
 export type WorkoutLabelViewDto = {
   description?: string;
   title?: string;
@@ -867,6 +902,39 @@ export type PageResponseWorkoutLogViewListDto = {
   pageSize?: number;
   success?: boolean;
   totalElements?: number;
+};
+export type ExerciseLogCreateDto = {
+  customWorkoutExerciseId?: number;
+  detailsList: string[];
+  workoutExerciseId?: number;
+};
+export type WorkoutLogCreateDto = {
+  customWorkoutId?: string;
+  details?: string;
+  exercises?: ExerciseLogCreateDto[];
+  workoutId?: string;
+};
+export type ExerciseLogViewDto = {
+  customWorkoutExerciseId?: number;
+  details?: string;
+  workoutExerciseId?: number;
+};
+export type WorkoutLogViewDto = {
+  createdAt: string;
+  customWorkoutId?: string;
+  description?: string;
+  exerciseLogs?: ExerciseLogViewDto[];
+  id: string;
+  labels?: {
+    [key: string]: WorkoutLabelViewDto;
+  };
+  title?: string;
+  workoutId?: string;
+};
+export type BaseResponseWorkoutLogViewDto = {
+  data?: WorkoutLogViewDto;
+  error?: string;
+  success?: boolean;
 };
 export type RoleLimitViewDto = {
   exerciseLimit?: number;
@@ -1098,10 +1166,15 @@ export const {
   useLazySearchExerciseQuery,
   useGetExerciseQuery,
   useLazyGetExerciseQuery,
+  useGetWorkoutLogListAdminQuery,
+  useLazyGetWorkoutLogListAdminQuery,
+  useDeleteWorkoutLogAdminMutation,
   useCreateWorkoutLogMutation,
   useGetWorkoutLogListQuery,
   useLazyGetWorkoutLogListQuery,
   useDeleteWorkoutLogMutation,
+  useGetWorkoutLogQuery,
+  useLazyGetWorkoutLogQuery,
   useGetRoleLimitQuery,
   useLazyGetRoleLimitQuery,
   useUpdateRoleLimitMutation,
