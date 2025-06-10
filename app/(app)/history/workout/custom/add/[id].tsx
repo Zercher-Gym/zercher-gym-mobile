@@ -2,30 +2,30 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView, StyleSheet, View } from "react-native";
 import {
-    IconButton,
-    Surface,
-    Text,
-    TextInput,
-    useTheme,
+  IconButton,
+  Surface,
+  Text,
+  TextInput,
+  useTheme,
 } from "react-native-paper";
 
 import DismissKeyboard from "@/components/shared/dismiss-keyboard";
 import LinearProgressBar from "@/components/shared/progress-bar";
 import { globalStyles } from "@/components/styles/global";
 import {
-    ExerciseLogCreateDto,
-    UnitViewDto,
-    useCreateWorkoutLogMutation,
-    useLazyGetCustomWorkoutQuery,
+  ExerciseLogCreateDto,
+  UnitViewDto,
+  useCreateWorkoutLogMutation,
+  useLazyGetCustomWorkoutQuery,
 } from "@/store/slices/apiSlice";
 import { setMessage } from "@/store/slices/messageSlice";
 import { capitalize } from "@/store/utils/utilities";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import {
-    Controller,
-    SubmitHandler,
-    useFieldArray,
-    useForm,
+  Controller,
+  SubmitHandler,
+  useFieldArray,
+  useForm,
 } from "react-hook-form";
 import { useDispatch } from "react-redux";
 
@@ -216,20 +216,23 @@ const HistoryAddCustomWorkoutPage = () => {
       await createWorkoutLog({
         workoutLogCreateDto: {
           customWorkoutId: id.toString(),
-          exercises: Object.entries(workoutExerciseDetails).map(
-            ([key, value]) =>
-              ({
-                workoutExerciseId: parseInt(key),
-                detailsList: value,
-              }) as ExerciseLogCreateDto
-          ),
-          customExercises: Object.entries(customWorkoutExerciseDetails).map(
-            ([key, value]) =>
-              ({
-                workoutExerciseId: parseInt(key),
-                detailsList: value,
-              }) as ExerciseLogCreateDto
-          ),
+          exercises: Object.entries(workoutExerciseDetails)
+            .map(
+              ([key, value]) =>
+                ({
+                  customWorkoutExerciseId: parseInt(key),
+                  detailsList: value,
+                }) as ExerciseLogCreateDto
+            )
+            .concat(
+              Object.entries(customWorkoutExerciseDetails).map(
+                ([key, value]) =>
+                  ({
+                    customWorkoutExerciseId: parseInt(key),
+                    detailsList: value,
+                  }) as ExerciseLogCreateDto
+              )
+            ),
         },
       });
     } catch (err) {
