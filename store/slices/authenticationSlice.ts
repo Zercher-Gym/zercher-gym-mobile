@@ -28,7 +28,11 @@ const selectIsSignedIn = createSelector(
   selectSelf,
   (state) => state.authentication.token !== null
 );
+const selectToken = createSelector(
+  selectSelf,
+  (state) => state.authentication.token
+);
 
 export const { setToken, removeToken } = authenticationSlice.actions;
-export { selectIsSignedIn };
+export { selectIsSignedIn, selectToken };
 export default authenticationSlice;

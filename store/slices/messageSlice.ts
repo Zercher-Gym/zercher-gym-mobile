@@ -20,12 +20,16 @@ export const messageSlice = createSlice({
     setMessage: (
       state: IMessageSlice,
       action: PayloadAction<{
-        data: any | null;
+        data: Object | null;
         type: MessageType;
       }>
     ) => {
       state.data = action.payload.data;
       state.type = action.payload.type;
+    },
+    clearMessage: (state: IMessageSlice) => {
+      state.data = null;
+      state.type = null;
     },
   },
 });
@@ -36,6 +40,6 @@ const selectMessage = createSelector(
   (state: RootState) => state.message
 );
 
-export const { setMessage } = messageSlice.actions;
+export const { setMessage, clearMessage } = messageSlice.actions;
 export { selectMessage };
 export default messageSlice;

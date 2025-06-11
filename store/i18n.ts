@@ -13,6 +13,7 @@ i18n
   .use(backend)
   .use(initReactI18next)
   .init({
+    lng: "en",
     defaultNS: "common",
     fallbackLng: supportedLanguages,
     supportedLngs: supportedLanguages,
@@ -24,3 +25,5 @@ i18n
       ro: ro,
     },
   });
+
+export default i18n;
