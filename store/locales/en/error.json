@@ -6,5 +6,7 @@
   "invalidCredentials": "Invalid credentials!",
   "userWithUsernameExists": "An user with this username already exists!",
   "userWithEmailExists": "An user with this email already exists!",
-  "userWithUsernameNotFound": "Could not find your account!"
+  "userWithUsernameNotFound": "Could not find your account!",
+  "exerciseLimitExceeded": "You have reached the exercise limit!",
+  "workoutLimitExceeded": "You have reached the workout limit!"
 }

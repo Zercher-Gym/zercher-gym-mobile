@@ -41,6 +41,8 @@ const HistoryEditWorkoutPage = () => {
   const [getCustomWorkout, customWorkout] = useLazyGetCustomWorkoutQuery();
   const [getWorkoutLog, workoutLog] = useLazyGetWorkoutLogQuery();
 
+  const [isCustomWorkout, setIsCustomWorkout] = useState<boolean | null>(null);
+
   const [inputExerciseMapping, setInputExerciseMapping] = useState<Record<
     number,
     number[]
@@ -82,6 +84,8 @@ const HistoryEditWorkoutPage = () => {
           id: id.toString(),
         }).unwrap();
 
+        reset({ details: workoutLogResponse.data?.details });
+
         let exerciseLogs: Record<number, string[]> = {};
         let customExerciseLogs: Record<number, string[]> = {};
 
@@ -112,10 +116,12 @@ const HistoryEditWorkoutPage = () => {
 
         let response = null;
         if (workoutLogResponse.data?.customWorkoutId !== null) {
+          setIsCustomWorkout(true);
           response = await getCustomWorkout({
             id: workoutLogResponse.data?.customWorkoutId!,
           }).unwrap();
         } else {
+          setIsCustomWorkout(false);
           response = await getWorkout({
             id: workoutLogResponse.data.workoutId!,
           }).unwrap();
@@ -190,7 +196,7 @@ const HistoryEditWorkoutPage = () => {
             for (let index = 0; index < exercise.quantity; index += 1) {
               addExerciseEntryField(
                 workoutExerciseId,
-                customExerciseLogs[workoutExerciseId][index]
+                exerciseLogs[workoutExerciseId][index]
               );
               addInputExercise(inputIndex, workoutExerciseId);
               inputIndex += 1;
@@ -198,7 +204,7 @@ const HistoryEditWorkoutPage = () => {
           } else {
             addExerciseEntryField(
               workoutExerciseId,
-              customExerciseLogs[workoutExerciseId][0]
+              exerciseLogs[workoutExerciseId][0]
             );
             addInputExercise(inputIndex, workoutExerciseId);
             inputIndex += 1;
@@ -210,22 +216,22 @@ const HistoryEditWorkoutPage = () => {
           inputIndex = 0;
           for (const customExercise of (response.data as any)
             .customExercises as CustomWorkoutCustomExerciseViewDto[]) {
-            const workoutExerciseId = customExercise.id;
+            const customWorkoutExerciseId = customExercise.id;
             if (customExercise.unit.type === "GROUP") {
               for (let index = 0; index < customExercise.quantity; index += 1) {
                 addCustomExerciseEntryField(
-                  workoutExerciseId,
-                  exerciseLogs[workoutExerciseId][index]
+                  customWorkoutExerciseId,
+                  customExerciseLogs[customWorkoutExerciseId][index]
                 );
-                addInputCustomExercise(inputIndex, workoutExerciseId);
+                addInputCustomExercise(inputIndex, customWorkoutExerciseId);
                 inputIndex += 1;
               }
             } else {
               addCustomExerciseEntryField(
-                workoutExerciseId,
-                exerciseLogs[workoutExerciseId][0]
+                customWorkoutExerciseId,
+                customExerciseLogs[customWorkoutExerciseId][0]
               );
-              addInputCustomExercise(inputIndex, workoutExerciseId);
+              addInputCustomExercise(inputIndex, customWorkoutExerciseId);
               inputIndex += 1;
             }
           }
@@ -244,8 +250,7 @@ const HistoryEditWorkoutPage = () => {
       flex: 1,
     },
     paddedSection: {
-      paddingHorizontal: 30,
-      paddingTop: 30,
+      padding: 30,
     },
     error: {
       marginBottom: 10,
@@ -273,13 +278,13 @@ const HistoryEditWorkoutPage = () => {
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <DismissKeyboard>
         <Surface style={styles.container} elevation={4}>
-          {customWorkout.isSuccess &&
-          customWorkout.currentData &&
-          customWorkout.currentData.success ? (
+          {isCustomWorkout !== null ? (
             <View style={styles.paddedSection}>
               <View style={globalStyles.header}>
                 <Text variant="headlineLarge">
-                  {customWorkout.currentData.data?.title}
+                  {isCustomWorkout
+                    ? customWorkout.currentData?.data?.title
+                    : workout.currentData?.data?.labels[i18n.language].title}
                 </Text>
               </View>
               <Controller
@@ -301,73 +306,73 @@ const HistoryEditWorkoutPage = () => {
               />
               <Text variant="headlineMedium">{t("exercise.title")}</Text>
               {inputExerciseMapping !== null &&
-                customWorkout.currentData?.data!.exercises.map(
-                  (exerciseWorkout, exerciseWorkoutIndex) => {
-                    if (
-                      exerciseWorkout.labels &&
-                      exerciseWorkout.labels[i18n.language]
-                    ) {
-                      return (
-                        <View
-                          style={styles.exercise}
-                          key={`${exerciseWorkout}-${exerciseWorkoutIndex}`}
-                        >
-                          <Text variant="titleMedium">
-                            {exerciseWorkout.labels[i18n.language].title}
-                          </Text>
-                          {inputExerciseMapping[exerciseWorkout.id].map(
-                            (fieldId, index) => (
-                              <View key={`${fieldId}-${index}`}>
-                                <Controller
-                                  control={control}
-                                  name={`exerciseEntries.${fieldId}.details`}
-                                  rules={{
-                                    required: t("details.requiredError", {
-                                      ns: "properties",
-                                    }),
-                                  }}
-                                  render={({
-                                    field: { onChange, value, onBlur },
-                                  }) => (
-                                    <TextInput
-                                      label={getFieldLabel(
-                                        exerciseWorkout.unit,
-                                        index + 1
-                                      )}
-                                      mode="outlined"
-                                      autoCapitalize="none"
-                                      onBlur={onBlur}
-                                      onChangeText={onChange}
-                                      value={value}
-                                      disabled={true}
-                                      error={
-                                        !!(
-                                          errors.exerciseEntries &&
-                                          errors.exerciseEntries[fieldId]
-                                            ?.details
-                                        )
-                                      }
-                                      style={styles.input}
-                                    />
-                                  )}
-                                />
-                                {errors.exerciseEntries &&
-                                  errors.exerciseEntries[fieldId]?.details && (
-                                    <Text style={styles.error}>
-                                      {
+                (customWorkout.currentData?.data!.exercises
+                  ? customWorkout.currentData!.data!.exercises
+                  : workout.currentData!.data!.exercises
+                ).map((exerciseWorkout, exerciseWorkoutIndex) => {
+                  if (
+                    exerciseWorkout.labels &&
+                    exerciseWorkout.labels[i18n.language]
+                  ) {
+                    return (
+                      <View
+                        style={styles.exercise}
+                        key={`${exerciseWorkout}-${exerciseWorkoutIndex}`}
+                      >
+                        <Text variant="titleMedium">
+                          {exerciseWorkout.labels[i18n.language].title}
+                        </Text>
+                        {inputExerciseMapping[exerciseWorkout.id].map(
+                          (fieldId, index) => (
+                            <View key={`${fieldId}-${index}`}>
+                              <Controller
+                                control={control}
+                                name={`exerciseEntries.${fieldId}.details`}
+                                rules={{
+                                  required: t("details.requiredError", {
+                                    ns: "properties",
+                                  }),
+                                }}
+                                render={({
+                                  field: { onChange, value, onBlur },
+                                }) => (
+                                  <TextInput
+                                    label={getFieldLabel(
+                                      exerciseWorkout.unit,
+                                      index + 1
+                                    )}
+                                    mode="outlined"
+                                    autoCapitalize="none"
+                                    onBlur={onBlur}
+                                    onChangeText={onChange}
+                                    value={value}
+                                    disabled={true}
+                                    error={
+                                      !!(
+                                        errors.exerciseEntries &&
                                         errors.exerciseEntries[fieldId]?.details
-                                          .message
-                                      }
-                                    </Text>
-                                  )}
-                              </View>
-                            )
-                          )}
-                        </View>
-                      );
-                    }
+                                      )
+                                    }
+                                    style={styles.input}
+                                  />
+                                )}
+                              />
+                              {errors.exerciseEntries &&
+                                errors.exerciseEntries[fieldId]?.details && (
+                                  <Text style={styles.error}>
+                                    {
+                                      errors.exerciseEntries[fieldId]?.details
+                                        .message
+                                    }
+                                  </Text>
+                                )}
+                            </View>
+                          )
+                        )}
+                      </View>
+                    );
                   }
-                )}
+                })}
               {inputCustomExerciseMapping !== null &&
                 customWorkout.currentData?.data!.customExercises.map(
                   (customExerciseWorkout, customExerciseWorkoutIndex) => (
@@ -402,6 +407,7 @@ const HistoryEditWorkoutPage = () => {
                                   onBlur={onBlur}
                                   onChangeText={onChange}
                                   value={value}
+                                  disabled={true}
                                   error={
                                     !!(
                                       errors.customExerciseEntries &&
@@ -431,9 +437,9 @@ const HistoryEditWorkoutPage = () => {
                 )}
             </View>
           ) : (
-            <LinearProgressBar />
+            <LinearProgressBar style={{ margin: 20 }} />
           )}
-          {isSubmitting && <LinearProgressBar />}
+          {isSubmitting && <LinearProgressBar style={{ margin: 20 }} />}
         </Surface>
       </DismissKeyboard>
     </ScrollView>

@@ -6,5 +6,7 @@
   "invalidCredentials": "Credențiale invalide!",
   "userWithUsernameExists": "Un utilizator cu acest nume deja există!",
   "userWithEmailExists": "Un utilizator cu acest email deja există!",
-  "userWithUsernameNotFound": "Contul dumneavoastră nu a fost găsit!"
+  "userWithUsernameNotFound": "Contul dumneavoastră nu a fost găsit!",
+  "exerciseLimitExceeded": "Limita de exerciții a fost atinsă!",
+  "workoutLimitExceeded": "Limita de antrenamente a fost atinsă!"
 }

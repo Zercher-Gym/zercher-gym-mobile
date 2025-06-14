@@ -132,7 +132,6 @@ const HistoryListPage = () => {
                             }
                           />
                           <IconButton
-                            {...props}
                             icon="delete"
                             onPress={() => setDeleteWorkoutModalId(value.id)}
                           />

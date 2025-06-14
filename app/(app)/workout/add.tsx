@@ -2,35 +2,35 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView, StyleSheet, View } from "react-native";
 import {
-    IconButton,
-    List,
-    Portal,
-    Surface,
-    Text,
-    TextInput,
-    useTheme,
+  IconButton,
+  List,
+  Portal,
+  Surface,
+  Text,
+  TextInput,
+  useTheme,
 } from "react-native-paper";
 
-import SearchExerciseModal from "@/components/exercise/search-exercise";
+import SearchExerciseModal from "@/components/exercise/search-exercise-modal";
 import DismissKeyboard from "@/components/shared/dismiss-keyboard";
 import LinearProgressBar from "@/components/shared/progress-bar";
 import { globalStyles } from "@/components/styles/global";
 import { modalStyles } from "@/components/styles/modal";
 import {
-    CustomExerciseViewDto,
-    CustomWorkoutCreateUpdateDto,
-    ExerciseViewDto,
-    useCreateCustomWorkoutMutation,
-    useLazyGetCustomWorkoutQuery,
-    useUpdateCustomWorkoutMutation,
+  CustomExerciseViewDto,
+  CustomWorkoutCreateUpdateDto,
+  ExerciseViewDto,
+  useCreateCustomWorkoutMutation,
+  useLazyGetCustomWorkoutQuery,
+  useUpdateCustomWorkoutMutation,
 } from "@/store/slices/apiSlice";
 import { setMessage } from "@/store/slices/messageSlice";
 import { useNavigation } from "expo-router";
 import {
-    Controller,
-    SubmitHandler,
-    useFieldArray,
-    useForm,
+  Controller,
+  SubmitHandler,
+  useFieldArray,
+  useForm,
 } from "react-hook-form";
 import { Dropdown } from "react-native-paper-dropdown";
 import { useDispatch } from "react-redux";

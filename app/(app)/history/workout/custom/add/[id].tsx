@@ -216,11 +216,12 @@ const HistoryAddCustomWorkoutPage = () => {
       await createWorkoutLog({
         workoutLogCreateDto: {
           customWorkoutId: id.toString(),
+          details: data.details,
           exercises: Object.entries(workoutExerciseDetails)
             .map(
               ([key, value]) =>
                 ({
-                  customWorkoutExerciseId: parseInt(key),
+                  workoutExerciseId: parseInt(key),
                   detailsList: value,
                 }) as ExerciseLogCreateDto
             )

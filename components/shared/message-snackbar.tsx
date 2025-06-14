@@ -20,7 +20,14 @@ const MessageSnackbar = () => {
       } else if (message.type == "payload") {
         const payload = message.data as any;
         if (payload.data !== null && payload.data !== undefined) {
-          setDisplayMessage(t(payload.data.error!, { ns: "error" }));
+          const errorMessage = t(
+            payload.data.error!,
+            t("unknownError", { ns: "error" }),
+            {
+              ns: "error",
+            }
+          );
+          setDisplayMessage(errorMessage);
         } else {
           console.log(payload);
           setDisplayMessage(t("unknownError", { ns: "error" }));

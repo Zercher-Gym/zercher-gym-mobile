@@ -48,8 +48,10 @@ const SearchWorkoutModal = (props: ISearchWorkoutModalProps) => {
         setVisibleCustomWorkouts(
           customWorkouts.currentData!.data!.filter(
             (value) =>
-              value.title!.toLowerCase().includes(searchQuery) ||
-              value.description!.toLowerCase().includes(searchQuery)
+              value.title!.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              value
+                .description!.toLowerCase()
+                .includes(searchQuery.toLowerCase())
           )
         );
       }
