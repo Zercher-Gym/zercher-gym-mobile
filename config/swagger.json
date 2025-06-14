@@ -3664,6 +3664,7 @@
         "type": "object",
         "properties": {
           "customWorkoutExerciseId": { "type": "integer", "format": "int64" },
+          "details": { "type": "string" },
           "detailsList": { "type": "array", "items": { "type": "string" } },
           "workoutExerciseId": { "type": "integer", "format": "int64" }
         },
@@ -3995,8 +3996,10 @@
         "type": "object",
         "properties": {
           "description": { "type": "string", "minLength": 1 },
+          "id": { "type": "integer", "format": "int64" },
           "title": { "type": "string", "minLength": 1 }
-        }
+        },
+        "required": ["id"]
       },
       "WorkoutLogCreateDTO": {
         "type": "object",
@@ -4016,10 +4019,10 @@
           "createdAt": { "type": "string", "format": "date-time" },
           "customWorkoutId": { "type": "string", "format": "uuid" },
           "description": { "type": "string" },
+          "details": { "type": "string" },
           "exerciseLogs": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/ExerciseLogViewDTO" },
-            "uniqueItems": true
+            "items": { "$ref": "#/components/schemas/ExerciseLogViewDTO" }
           },
           "id": { "type": "string", "format": "uuid" },
           "labels": {

@@ -884,6 +884,7 @@ export type BaseResponseExerciseViewAdminDto = {
 };
 export type WorkoutLabelViewDto = {
   description?: string;
+  id: number;
   title?: string;
 };
 export type WorkoutLogViewListDto = {
@@ -905,6 +906,7 @@ export type PageResponseWorkoutLogViewListDto = {
 };
 export type ExerciseLogCreateDto = {
   customWorkoutExerciseId?: number;
+  details?: string;
   detailsList: string[];
   workoutExerciseId?: number;
 };
@@ -923,6 +925,7 @@ export type WorkoutLogViewDto = {
   createdAt: string;
   customWorkoutId?: string;
   description?: string;
+  details?: string;
   exerciseLogs?: ExerciseLogViewDto[];
   id: string;
   labels?: {
